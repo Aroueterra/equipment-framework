@@ -2,6 +2,12 @@ package aroueterra.EquipmentFramework.UI.inventory;
 
 public enum ItemType {
     WEAPON,
-    ARMOR,
+    OFFHAND,
+    HEAD,
+    LOWER,
+    CHEST,
+    HANDS,
+    FEET,
+    NECK,
     CONSUMABLE;
 }

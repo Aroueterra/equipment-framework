@@ -6,11 +6,15 @@ import static aroueterra.EquipmentFramework.UI.inventory.ItemType.WEAPON;
 import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.DAMAGE;
 import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.PRICE;
 import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.RARITY;
+import aroueterra.EquipmentFramework.player.Hero;
+import aroueterra.EquipmentFramework.player.Shop;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.PopupMenu;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -95,10 +99,9 @@ public class Inventory {
                     coordinates.put("column", j);
                     return coordinates;
                 } else {
-                    System.out.println(items[i][j].getName() + " in row " + i + " col " + j);
+                    //System.out.println(items[i][j].getName() + " in row " + i + " col " + j);
                 }
             }
-            System.out.println();
         }
         return null;
     }
@@ -119,22 +122,97 @@ public class Inventory {
         this.inventoryCells[row][col] = cell;
     }
 
-    public void updateCells(JPopupMenu pop) {
-        //Temporarily fill inventory with axes.
+    public boolean discard(int row, int column) {
+        if (row < 0 || row >= items.length || column < 0 || column >= items[0].length) {
+            System.out.println("Location " + row + ", " + column + " is out of bounds");
+            return false;
+        }
+        if (items[row][column] == null) {
+            System.out.println("There's nothing here");
+            return false;
+        }
+        var comp = retrieveCell(row, column).getComponents();
+        for (var i : comp) {
+            var slot = ((ImagePanel) i);
+            slot.setImage("/images/slot_empty.png");
+        }
+        items[row][column] = null;
+        return true;
+    }
+
+    public boolean discard(java.awt.event.ActionEvent evt, Component invoker) {
+        var cell = (CellPane) invoker;
+        int row = cell.getRow();
+        int column = cell.getColumn();
+
+        if (row < 0 || row >= items.length || column < 0 || column >= items[0].length) {
+            System.out.println("Location " + row + ", " + column + " is out of bounds");
+            return false;
+        }
+        if (items[row][column] == null) {
+            System.out.println("There's nothing to discard here");
+            return false;
+        }
+        var comp = retrieveCell(row, column).getComponents();
+        for (var i : comp) {
+            var slot = ((ImagePanel) i);
+            slot.setImage("/images/slot_empty.png");
+        }
+        items[row][column] = null;
+        System.out.println("You discarded the " + cell.getName());
+        return true;
+
+    }
+
+    //Creates inner cells once for each inventory cell
+    public void createInnerCell(JPopupMenu pop, Map<String, JMenuItem> list, Shop shop) {
+        var context = list.get("purchase");
+        context.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Component invoker = pop.getInvoker();
+                shop.purchase(evt, invoker);
+            }
+        });
+        pop.add(context);
+
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 5; col++) {
                 CellPane cell = inventoryCells[row][col];
-                ImagePanel inner = new ImagePanel();
-                //inner.setImage("/images/wpn-swd.png");
-                //Item swd = new Item("sword", WEAPON, "/images/wpn-swd.png");
-                //swd.setProperty(DAMAGE, 5);
-                //swd.setProperty(RARITY, 1);
-                //swd.setProperty(PRICE, 100);
-                //store(swd, row, col);
-                cell.add(inner, BorderLayout.CENTER);
+                ImagePanel innerCell = new ImagePanel();
+                cell.add(innerCell, BorderLayout.CENTER);
                 cell.setComponentPopupMenu(pop);
             }
         }
-        //checkInventory();
+    }
+
+    public void createInnerCell(JPopupMenu pop, Map<String, JMenuItem> list, Hero hero) {
+
+        var context = list.get("equip");
+        context.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Component invoker = pop.getInvoker();
+                hero.equipItem(evt, invoker);
+            }
+        });
+        var context2 = list.get("discard");
+        context2.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Component invoker = pop.getInvoker();
+                hero.inventory.discard(evt, invoker);
+            }
+        });
+        pop.add(context);
+        pop.add(context2);
+
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                CellPane cell = inventoryCells[row][col];
+                ImagePanel innerCell = new ImagePanel();
+                cell.add(innerCell, BorderLayout.CENTER);
+                cell.setComponentPopupMenu(pop);
+            }
+        }
     }
 }

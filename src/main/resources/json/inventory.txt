@@ -1,0 +1,150 @@
+{
+  "player": {
+    "inventory": [
+      {
+        "name": "Holy Sabre",
+        "path": "/images/wpn-swd.png",
+        "type": "weapon",
+        "p1": 10,
+        "p2": 2,
+        "p3": 100
+      },
+      {
+        "name": "Great Axe",
+        "path": "/images/wpn-axe.png",
+        "type": "weapon",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Bloody Dagger",
+        "path": "/images/wpn-dag.png",
+        "type": "weapon",
+        "p1": 10,
+        "p2": 3,
+        "p3": 100
+      },
+      {
+        "name": "Nordic Hatchet",
+        "path": "/images/wpn-hch.png",
+        "type": "weapon",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Kite Shield",
+        "path": "/images/off-kit.png",
+        "type": "off",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Wooden Buckler",
+        "path": "/images/off-wsd.png",
+        "type": "off",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Iron Armor",
+        "path": "/images/arm-irn.png",
+        "type": "armor-chest",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Great Steel Helm",
+        "path": "/images/arm-hlm.png",
+        "type": "armor-head",
+        "p1": 10,
+        "p2": 2,
+        "p3": 100
+      },
+      {
+        "name": "Steel Boots",
+        "path": "/images/arm-bts.png",
+        "type": "armor-feet",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Steel Gauntlets",
+        "path": "/images/arm-glt.png",
+        "type": "armor-hands",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Black Full Helm",
+        "path": "/images/arm-fhm.png",
+        "type": "armor-head",
+        "p1": 10,
+        "p2": 4,
+        "p3": 100
+      },
+      {
+        "name": "Plate Mail",
+        "path": "/images/arm-plt.png",
+        "type": "armor-chest",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Leather Pants",
+        "path": "/images/arm-pts.png",
+        "type": "armor-lower",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Mage Robes",
+        "path": "/images/arm-rob.png",
+        "type": "armor",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Gold Necklace",
+        "path": "/images/arm-amu.png",
+        "type": "armor-neck",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      },
+      {
+        "name": "Cloak of Shadows",
+        "path": "/images/arm-hlm.png",
+        "type": "armor-nech",
+        "p1": 10,
+        "p2": 4,
+        "p3": 100
+      },
+      {
+        "name": "Potion of Healing",
+        "path": "/images/csm-pot.png",
+        "type": "consumable",
+        "p1": 10,
+        "p2": 1,
+        "p3": 100
+      }
+    ],
+    "status": {
+      "name": "Vendredi",
+      "health": 100,
+      "gold": 900,
+      "str": 2,
+      "agi": 5,
+      "int": 7
+    }
+  }
+}

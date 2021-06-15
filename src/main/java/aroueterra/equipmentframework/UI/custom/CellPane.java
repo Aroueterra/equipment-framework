@@ -7,6 +7,7 @@ package aroueterra.EquipmentFramework.UI.custom;
 
 import aroueterra.EquipmentFramework.UI.DashboardFrame;
 import aroueterra.EquipmentFramework.player.Hero;
+import aroueterra.EquipmentFramework.player.Shop;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,6 +25,7 @@ import javax.swing.border.Border;
  */
 public class CellPane extends JPanel {
 
+    private Shop shop;
     private Hero hero;
     private Color defaultBackground;
     private Border oldBorder;
@@ -37,16 +39,58 @@ public class CellPane extends JPanel {
         this.column = column;
         this.image = img;
         setOpaque(false);
-        //setBorder(BorderFactory.createEmptyBorder(int top, int left, int bottom, int right));
         setLayout(new BorderLayout(0, 0));
-        addMouseListener(new MouseAdapter() {
+        addListener();
+    }
+
+    public CellPane(Image img, Hero hero, Shop shop, int row, int column) {
+        this.image = img;
+        this.hero = hero;
+        this.shop = shop;
+        this.row = row;
+        this.column = column;
+        setOpaque(false);
+        setLayout(new BorderLayout(0, 0));
+        addShopListener();
+    }
+
+    private void addShopListener() {
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                //defaultBackground = getBackground();
-
+                //defaultBackground = getBackground();//setBackground(Color.BLUE);//setBorder(BorderFactory.createLineBorder(Color.YELLOW));
                 setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.YELLOW)));
-                //setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-                //setBackground(Color.BLUE);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.RED)));
+                if (shop.inventory.retrieve(row, column) != null) {
+                    System.out.println("You see a... " + shop.inventory.retrieve(row, column).getName());
+                }
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.YELLOW)));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setBorder(oldBorder);
+                validate();
+                repaint();
+            }
+        });
+    }
+
+    private void addListener() {
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //defaultBackground = getBackground();//setBackground(Color.BLUE);//setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.YELLOW)));
             }
 
             @Override

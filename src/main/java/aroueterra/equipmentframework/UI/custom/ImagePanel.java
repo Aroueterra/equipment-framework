@@ -50,10 +50,7 @@ public class ImagePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        //g2.drawImage(image, 0, 0, this);
         g.drawImage(getImage(), 0, 0, getWidth(), getHeight(), this);
-        //g.drawImage(getImage().getScaledInstance(getWidth(), -1, Image.SCALE_SMOOTH), getWidth(), getHeight(), this);
     }
 
     public Image getImage() {
