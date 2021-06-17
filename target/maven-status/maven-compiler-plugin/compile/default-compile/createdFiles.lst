@@ -36,13 +36,15 @@ aroueterra\EquipmentFramework\UI\SetupFrame.class
 aroueterra\EquipmentFramework\UI\custom\BackgroundPanel.class
 aroueterra\EquipmentFramework\UI\inventory\ItemType.class
 aroueterra\EquipmentFramework\UI\custom\MessageConsole.class
-aroueterra\EquipmentFramework\UI\inventory\Inventory$4.class
 aroueterra\EquipmentFramework\UI\inventory\Inventory.class
 aroueterra\EquipmentFramework\Main.class
 aroueterra\EquipmentFramework\UI\DashboardFrame$7.class
 aroueterra\EquipmentFramework\UI\TestGrid02$1.class
 aroueterra\EquipmentFramework\UI\custom\CellPane$2.class
+aroueterra\EquipmentFramework\UI\DashboardFrame$12.class
 aroueterra\EquipmentFramework\UI\DashboardFrame$1.class
 aroueterra\EquipmentFramework\UI\DashboardFrame$8.class
 aroueterra\EquipmentFramework\utility\Compendium.class
+aroueterra\EquipmentFramework\player\Hero$1.class
 aroueterra\EquipmentFramework\UI\inventory\Inventory$3.class
+aroueterra\EquipmentFramework\UI\custom\CellPane$3.class

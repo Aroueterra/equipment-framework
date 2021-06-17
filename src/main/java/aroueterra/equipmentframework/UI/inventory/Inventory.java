@@ -106,6 +106,19 @@ public class Inventory {
         return null;
     }
 
+    public void clear() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                var children = inventoryCells[i][j].getComponents();
+                for (var child : children) {
+                    var panel = (ImagePanel) child;
+                    panel.setImage("/images/slot_empty.png");
+                }
+                items[i][j] = null;
+            }
+        }
+    }
+
     public CellPane retrieveCell(int row, int column) {
         if (row < 0 || row >= inventoryCells.length || column < 0 || column >= inventoryCells[0].length) {
             System.out.println("Location " + row + ", " + column + " is out of bounds");
@@ -158,8 +171,9 @@ public class Inventory {
             var slot = ((ImagePanel) i);
             slot.setImage("/images/slot_empty.png");
         }
+        System.out.println("" + items[row][column].getName() + " was removed");
         items[row][column] = null;
-        System.out.println("You discarded the " + cell.getName());
+
         return true;
 
     }

@@ -20,8 +20,8 @@ public class Main {
 
     public static void main(String[] args) {
         FlatDarkLaf.setup();
-        //Setup();
-        CreateDashboard();
+        Setup();
+        //CreateDashboard();
 
     }
 

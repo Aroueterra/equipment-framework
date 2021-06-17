@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -73,8 +74,12 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         this.hero = hero;
         this.compendium = compendium;
-        this.shop = new Shop(0, new Inventory(5, 5), hero, shopCoinField, coinField);
         initComponents();
+        hero.setComponents(setupEquipSlots());
+        updateHealth(hero.getHealth());
+        coinField.setText(Integer.toString(hero.getGold()));
+
+        this.shop = new Shop(0, new Inventory(5, 5), hero, shopCoinField, coinField);
         BufferedImage shopslot_bg = null, slot_bg = null;
         try {
             shopslot_bg = ImageIO.read(getClass().getResource("/images/slot_paper.png"));
@@ -87,10 +92,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
     }
 
-    public void FixPopMenu() {
-
-    }
-
+    //Create hero slots
     public void CreateCells(BufferedImage img, JPanel parent, Hero hero, int count) {
         GridBagConstraints gbc = new GridBagConstraints();
         for (int row = 0; row < count; row++) {
@@ -161,9 +163,56 @@ public class DashboardFrame extends javax.swing.JFrame {
         shop.inventory.createInnerCell(shopPop, list, shop);
     }
 
+    private void updateHealth(int health) {
+        healthField.setText(Integer.toString(health));
+        if (health > 76) {
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_100.png")));
+        } else if (health > 51) {
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_75.png")));
+        } else if (health > 26) {
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_50.png")));
+        } else if (health > 10) {
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_25.png")));
+        } else {
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_0.png")));
+        }
+    }
+
+    public HashMap<ItemType, CellPane> setupEquipSlots() {
+        var equipmentSlots = new HashMap<ItemType, CellPane>();
+        BufferedImage eq_img = null, inner_img = null, wp_img = null;
+        try {
+            wp_img = ImageIO.read(getClass().getResource("/images/slot_weapon.png"));
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_equips.png"));
+            inner_img = ImageIO.read(getClass().getResource("/images/slot_border.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        equipmentSlots.put(ItemType.NECK, (CellPane) neckPanel);
+        equipmentSlots.put(ItemType.HEAD, (CellPane) headPanel);
+        equipmentSlots.put(ItemType.WEAPON, (CellPane) leftWeaponPanel);
+        equipmentSlots.put(ItemType.CHEST, (CellPane) chestPanel);
+        equipmentSlots.put(ItemType.OFFHAND, (CellPane) rightWeaponPanel);
+        equipmentSlots.put(ItemType.LOWER, (CellPane) lowerPanel);
+        equipmentSlots.put(ItemType.FEET, (CellPane) feetPanel);
+        equipmentSlots.put(ItemType.HANDS, (CellPane) handPanel);
+        return equipmentSlots;
+//        leftWeapon = new ImagePanel(wp_img);
+//        rightWeapon = new ImagePanel(wp_img);
+//        headPanel = new ImagePanel(eq_img);
+//        chestPanel = new ImagePanel(eq_img);
+//        neckPanel = new ImagePanel(eq_img);
+//        handPanel = new ImagePanel(eq_img);
+//        feetPanel = new ImagePanel(eq_img);
+    }
+
     private void randomizeShop(Compendium[] compendium, int max, int min) {
         var rand = new Random();
         var slots = shop.inventory.checkFreeSlots();
+        if (slots == null) {
+            shop.inventory.clear();
+            return;
+        }
         do {
             int val = rand.nextInt((max - min) + 1) + min;
             var item = compendium[val];
@@ -222,9 +271,6 @@ public class DashboardFrame extends javax.swing.JFrame {
 
     public void AddItem(Item item, Inventory inventory, Map<String, Integer> coordinates) {
         if (coordinates != null) {
-            System.out.println("-----------------------");
-            System.out.println(item.getName());
-            System.out.println(item.getAsset());
             inventory.store(item, coordinates.get("row"), coordinates.get("column"), item.getAsset());
         } else {
             System.out.println("Item cannot be added: no free slots available.");
@@ -258,6 +304,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         inventoryPop = new javax.swing.JPopupMenu();
         discardContext = new javax.swing.JMenuItem();
@@ -299,7 +346,28 @@ public class DashboardFrame extends javax.swing.JFrame {
         rightSplit = new javax.swing.JPanel();
         rightCards = new javax.swing.JPanel();
         statusCard = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         equipmentCard = new javax.swing.JPanel();
+        leftWeaponPanel = new javax.swing.JPanel();
+        leftWeapon = new javax.swing.JPanel();
+        neckPanel = new javax.swing.JPanel();
+        neckArmor = new javax.swing.JPanel();
+        headPanel = new javax.swing.JPanel();
+        headArmor = new javax.swing.JPanel();
+        handPanel = new javax.swing.JPanel();
+        handArmor = new javax.swing.JPanel();
+        chestPanel = new javax.swing.JPanel();
+        chestArmor = new javax.swing.JPanel();
+        rightWeaponPanel = new javax.swing.JPanel();
+        rightWeapon = new javax.swing.JPanel();
+        lowerPanel = new javax.swing.JPanel();
+        lowerArmor = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        feetPanel = new javax.swing.JPanel();
+        feetArmor = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         shopCard = new javax.swing.JPanel();
         shopPanel = new javax.swing.JPanel();
         shopBar = new javax.swing.JPanel();
@@ -318,6 +386,15 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         inventoryPop.setBackground(new java.awt.Color(102, 102, 102));
         inventoryPop.setForeground(new java.awt.Color(255, 255, 255));
+        inventoryPop.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                inventoryPopPopupMenuWillBecomeVisible(evt);
+            }
+        });
 
         discardContext.setBackground(new java.awt.Color(255, 0, 0));
         discardContext.setForeground(new java.awt.Color(255, 204, 204));
@@ -383,6 +460,7 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         buyContext.setForeground(new java.awt.Color(255, 255, 0));
         buyContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/give.png"))); // NOI18N
+        buyContext.setText("Purchase?");
 
         sellContext.setForeground(new java.awt.Color(255, 255, 0));
         sellContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/gain.png"))); // NOI18N
@@ -639,6 +717,11 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         coinIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/coin.png"))); // NOI18N
         coinIcon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        coinIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                coinIconMouseClicked(evt);
+            }
+        });
         coinStatus.add(coinIcon);
 
         coinHolder.setBackground(new java.awt.Color(0, 0, 0));
@@ -681,6 +764,11 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_100.png"))); // NOI18N
         healthIcon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        healthIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                healthIconMouseClicked(evt);
+            }
+        });
         healthStatus.add(healthIcon);
 
         healthHolder.setBackground(new java.awt.Color(0, 0, 0));
@@ -760,17 +848,40 @@ public class DashboardFrame extends javax.swing.JFrame {
         }
         equipmentCard = new ImagePanel(inventoryBG);
         equipmentCard.setLayout(new java.awt.GridBagLayout());
+        statusCard.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout statusCardLayout = new javax.swing.GroupLayout(statusCard);
-        statusCard.setLayout(statusCardLayout);
-        statusCardLayout.setHorizontalGroup(
-            statusCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(240, 508));
+        jPanel3.setRequestFocusEnabled(false);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 241, Short.MAX_VALUE)
         );
-        statusCardLayout.setVerticalGroup(
-            statusCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 508, Short.MAX_VALUE)
         );
+
+        jPanel2.add(jPanel3);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 303, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 508, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel4);
+
+        statusCard.add(jPanel2, java.awt.BorderLayout.CENTER);
 
         equipmentCard.setMaximumSize(new Dimension(800, 800));
         equipmentCard.setMinimumSize(new Dimension(500, 500));
@@ -791,17 +902,298 @@ public class DashboardFrame extends javax.swing.JFrame {
         }
         equipmentCard = new ImagePanel(equipmentImg);
         equipmentCard.setLayout(new java.awt.GridBagLayout());
+        equipmentCard.setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout equipmentCardLayout = new javax.swing.GroupLayout(equipmentCard);
-        equipmentCard.setLayout(equipmentCardLayout);
-        equipmentCardLayout.setHorizontalGroup(
-            equipmentCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 545, Short.MAX_VALUE)
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_weapon.png"));
+            leftWeaponPanel = new CellPane(eq_img, hero, ItemType.WEAPON);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        leftWeaponPanel.setName("weapon outer"); // NOI18N
+        leftWeaponPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        leftWeaponPanel.setLayout(new java.awt.BorderLayout());
+
+        leftWeapon = new ImagePanel();
+        leftWeapon.setBackground(new java.awt.Color(51, 51, 51));
+        leftWeapon.setName("weapon inner"); // NOI18N
+        leftWeapon.setOpaque(false);
+        leftWeapon.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout leftWeaponLayout = new javax.swing.GroupLayout(leftWeapon);
+        leftWeapon.setLayout(leftWeaponLayout);
+        leftWeaponLayout.setHorizontalGroup(
+            leftWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
         );
-        equipmentCardLayout.setVerticalGroup(
-            equipmentCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 508, Short.MAX_VALUE)
+        leftWeaponLayout.setVerticalGroup(
+            leftWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
         );
+
+        leftWeaponPanel.add(leftWeapon, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        equipmentCard.add(leftWeaponPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_neck.png"));
+            neckPanel = new CellPane(eq_img, hero, ItemType.NECK);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        neckPanel.setMinimumSize(new java.awt.Dimension(81, 74));
+        neckPanel.setLayout(new java.awt.BorderLayout());
+
+        neckArmor = new ImagePanel();
+        neckArmor.setBackground(new java.awt.Color(51, 51, 51));
+        neckArmor.setMinimumSize(new java.awt.Dimension(69, 62));
+        neckArmor.setOpaque(false);
+
+        javax.swing.GroupLayout neckArmorLayout = new javax.swing.GroupLayout(neckArmor);
+        neckArmor.setLayout(neckArmorLayout);
+        neckArmorLayout.setHorizontalGroup(
+            neckArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 69, Short.MAX_VALUE)
+        );
+        neckArmorLayout.setVerticalGroup(
+            neckArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 62, Short.MAX_VALUE)
+        );
+
+        neckPanel.add(neckArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 1);
+        equipmentCard.add(neckPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_head.png"));
+            headPanel = new CellPane(eq_img, hero, ItemType.HEAD);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        headPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        headPanel.setLayout(new java.awt.BorderLayout());
+
+        headArmor = new ImagePanel();
+        headArmor.setBackground(new java.awt.Color(51, 51, 51));
+        headArmor.setOpaque(false);
+        headArmor.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout headArmorLayout = new javax.swing.GroupLayout(headArmor);
+        headArmor.setLayout(headArmorLayout);
+        headArmorLayout.setHorizontalGroup(
+            headArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
+        );
+        headArmorLayout.setVerticalGroup(
+            headArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
+        );
+
+        headPanel.add(headArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 1, 1, 0);
+        equipmentCard.add(headPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_feet.png"));
+            handPanel = new CellPane(eq_img, hero, ItemType.HANDS);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        handPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        handPanel.setLayout(new java.awt.BorderLayout());
+
+        handArmor = new ImagePanel();
+        handArmor.setBackground(new java.awt.Color(51, 51, 51));
+        handArmor.setOpaque(false);
+        handArmor.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout handArmorLayout = new javax.swing.GroupLayout(handArmor);
+        handArmor.setLayout(handArmorLayout);
+        handArmorLayout.setHorizontalGroup(
+            handArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
+        );
+        handArmorLayout.setVerticalGroup(
+            handArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
+        );
+
+        handPanel.add(handArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 1, 4, 0);
+        equipmentCard.add(handPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_chest.png"));
+            chestPanel = new CellPane(eq_img, hero, ItemType.CHEST);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        chestPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        chestPanel.setLayout(new java.awt.BorderLayout());
+
+        chestArmor = new ImagePanel();
+        chestArmor.setBackground(new java.awt.Color(51, 51, 51));
+        chestArmor.setOpaque(false);
+        chestArmor.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout chestArmorLayout = new javax.swing.GroupLayout(chestArmor);
+        chestArmor.setLayout(chestArmorLayout);
+        chestArmorLayout.setHorizontalGroup(
+            chestArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
+        );
+        chestArmorLayout.setVerticalGroup(
+            chestArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
+        );
+
+        chestPanel.add(chestArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        equipmentCard.add(chestPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_off.png"));
+            rightWeaponPanel = new CellPane(eq_img, hero, ItemType.OFFHAND);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        rightWeaponPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        rightWeaponPanel.setLayout(new java.awt.BorderLayout());
+
+        rightWeapon = new ImagePanel();
+        rightWeapon.setBackground(new java.awt.Color(51, 51, 51));
+        rightWeapon.setOpaque(false);
+        rightWeapon.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout rightWeaponLayout = new javax.swing.GroupLayout(rightWeapon);
+        rightWeapon.setLayout(rightWeaponLayout);
+        rightWeaponLayout.setHorizontalGroup(
+            rightWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
+        );
+        rightWeaponLayout.setVerticalGroup(
+            rightWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
+        );
+
+        rightWeaponPanel.add(rightWeapon, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        equipmentCard.add(rightWeaponPanel, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_lower.png"));
+            lowerPanel = new CellPane(eq_img, hero, ItemType.LOWER);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        lowerPanel.setPreferredSize(new java.awt.Dimension(81, 74));
+        lowerPanel.setLayout(new java.awt.BorderLayout());
+
+        lowerArmor = new ImagePanel();
+        lowerArmor.setBackground(new java.awt.Color(51, 51, 51));
+        lowerArmor.setOpaque(false);
+        lowerArmor.setPreferredSize(new java.awt.Dimension(69, 62));
+
+        javax.swing.GroupLayout lowerArmorLayout = new javax.swing.GroupLayout(lowerArmor);
+        lowerArmor.setLayout(lowerArmorLayout);
+        lowerArmorLayout.setHorizontalGroup(
+            lowerArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 81, Short.MAX_VALUE)
+        );
+        lowerArmorLayout.setVerticalGroup(
+            lowerArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 74, Short.MAX_VALUE)
+        );
+
+        lowerPanel.add(lowerArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        equipmentCard.add(lowerPanel, gridBagConstraints);
+
+        jLabel1.setMaximumSize(new java.awt.Dimension(81, 74));
+        jLabel1.setMinimumSize(new java.awt.Dimension(81, 74));
+        jLabel1.setPreferredSize(new java.awt.Dimension(81, 74));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        equipmentCard.add(jLabel1, gridBagConstraints);
+
+        try {
+            BufferedImage eq_img = null;
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_feet.png"));
+            feetPanel = new CellPane(eq_img, hero, ItemType.FEET);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        feetPanel.setLayout(new java.awt.BorderLayout());
+
+        feetArmor = new ImagePanel();
+        feetArmor.setBackground(new java.awt.Color(51, 51, 51));
+        feetArmor.setOpaque(false);
+
+        javax.swing.GroupLayout feetArmorLayout = new javax.swing.GroupLayout(feetArmor);
+        feetArmor.setLayout(feetArmorLayout);
+        feetArmorLayout.setHorizontalGroup(
+            feetArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 69, Short.MAX_VALUE)
+        );
+        feetArmorLayout.setVerticalGroup(
+            feetArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 62, Short.MAX_VALUE)
+        );
+
+        feetPanel.add(feetArmor, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 0, 3);
+        equipmentCard.add(feetPanel, gridBagConstraints);
+
+        jLabel2.setMaximumSize(new java.awt.Dimension(81, 74));
+        jLabel2.setMinimumSize(new java.awt.Dimension(81, 74));
+        jLabel2.setPreferredSize(new java.awt.Dimension(81, 74));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        equipmentCard.add(jLabel2, gridBagConstraints);
 
         equipmentCard.setMaximumSize(new Dimension(800, 800));
         equipmentCard.setMinimumSize(new Dimension(500, 500));
@@ -875,7 +1267,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         shopCoinField.setBackground(new java.awt.Color(0, 0, 0));
         shopCoinField.setForeground(new java.awt.Color(255, 255, 204));
         shopCoinField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        shopCoinField.setText("9999");
+        shopCoinField.setText("0");
         shopCoinField.setFocusable(false);
         shopCoinField.setRequestFocusEnabled(false);
 
@@ -1135,6 +1527,25 @@ public class DashboardFrame extends javax.swing.JFrame {
         randomizeShop(compendium, 16, 0);
     }//GEN-LAST:event_btnRefreshActionPerformed
 
+    private void inventoryPopPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_inventoryPopPopupMenuWillBecomeVisible
+        if (shopToggle.isSelected()) {
+            //discardContext.setText("Barter");
+        }
+    }//GEN-LAST:event_inventoryPopPopupMenuWillBecomeVisible
+
+    private void coinIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_coinIconMouseClicked
+        if ((hero.getGold() + 1000) < 10000) {
+            hero.setGold(hero.getGold() + 1000);
+            coinField.setText(Integer.toString(hero.getGold()));
+        }
+
+    }//GEN-LAST:event_coinIconMouseClicked
+
+    private void healthIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_healthIconMouseClicked
+        hero.setHealth(hero.getHealth() - 10);
+        updateHealth(hero.getHealth());
+    }//GEN-LAST:event_healthIconMouseClicked
+
 //    public static void main(String args[]) {
 //
 //        java.awt.EventQueue.invokeLater(() -> {
@@ -1146,6 +1557,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnRefresh;
     private javax.swing.JButton button_AddItem;
     private javax.swing.JMenuItem buyContext;
+    private javax.swing.JPanel chestArmor;
+    private javax.swing.JPanel chestPanel;
     private javax.swing.JComboBox<String> cmb_AddEquip;
     private javax.swing.JTextField coinField;
     private javax.swing.JPanel coinHolder;
@@ -1163,6 +1576,12 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem equipContext;
     private javax.swing.JToggleButton equipToggle;
     private javax.swing.JPanel equipmentCard;
+    private javax.swing.JPanel feetArmor;
+    private javax.swing.JPanel feetPanel;
+    private javax.swing.JPanel handArmor;
+    private javax.swing.JPanel handPanel;
+    private javax.swing.JPanel headArmor;
+    private javax.swing.JPanel headPanel;
     private javax.swing.JTextField healthField;
     private javax.swing.JPanel healthHolder;
     private javax.swing.JLabel healthIcon;
@@ -1171,14 +1590,27 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel inventoryCard;
     private javax.swing.JPopupMenu inventoryPop;
     private javax.swing.JToggleButton inventoryToggle;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel lblLeftSplit;
     private javax.swing.JPanel leftCards;
     private javax.swing.JPanel leftSplit;
+    private javax.swing.JPanel leftWeapon;
+    private javax.swing.JPanel leftWeaponPanel;
+    private javax.swing.JPanel lowerArmor;
+    private javax.swing.JPanel lowerPanel;
     private javax.swing.JPanel menuPanel;
+    private javax.swing.JPanel neckArmor;
+    private javax.swing.JPanel neckPanel;
     private javax.swing.JPanel rightCards;
     private javax.swing.JPanel rightSplit;
     private javax.swing.JTabbedPane rightTab;
+    private javax.swing.JPanel rightWeapon;
+    private javax.swing.JPanel rightWeaponPanel;
     private javax.swing.JScrollPane scroll_Logs;
     private javax.swing.JScrollPane scroll_WorkArea;
     private javax.swing.JMenuItem sellContext;

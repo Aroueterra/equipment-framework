@@ -6,6 +6,7 @@
 package aroueterra.EquipmentFramework.UI.custom;
 
 import aroueterra.EquipmentFramework.UI.DashboardFrame;
+import aroueterra.EquipmentFramework.UI.inventory.ItemType;
 import aroueterra.EquipmentFramework.player.Hero;
 import aroueterra.EquipmentFramework.player.Shop;
 import java.awt.BorderLayout;
@@ -32,6 +33,43 @@ public class CellPane extends JPanel {
     private Image image;
     private int row;
     private int column;
+    private ItemType type;
+
+    public CellPane(Image img, Hero hero, ItemType type) {
+        this.hero = hero;
+        this.type = type;
+        this.image = img;
+        setOpaque(false);
+        setLayout(new BorderLayout(0, 0));
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //defaultBackground = getBackground();//setBackground(Color.BLUE);//setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.YELLOW)));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.RED)));
+//                if (hero.inventory.retrieve(row, column) != null) {
+//                    System.out.println("" + hero.inventory.retrieve(row, column).getName() + " is here");
+//                }
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.YELLOW)));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setBorder(oldBorder);
+                validate();
+                repaint();
+            }
+        });
+    }
 
     public CellPane(Image img, Hero hero, int row, int column) {
         this.hero = hero;
@@ -66,7 +104,7 @@ public class CellPane extends JPanel {
             public void mousePressed(MouseEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.RED)));
                 if (shop.inventory.retrieve(row, column) != null) {
-                    System.out.println("You see a... " + shop.inventory.retrieve(row, column).getName());
+                    System.out.println("" + shop.inventory.retrieve(row, column).getName() + " is on display");
                 }
 
             }
@@ -97,7 +135,7 @@ public class CellPane extends JPanel {
             public void mousePressed(MouseEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.RED)));
                 if (hero.inventory.retrieve(row, column) != null) {
-                    System.out.println("You see a... " + hero.inventory.retrieve(row, column).getName());
+                    System.out.println("" + hero.inventory.retrieve(row, column).getName() + " is here");
                 }
 
             }
