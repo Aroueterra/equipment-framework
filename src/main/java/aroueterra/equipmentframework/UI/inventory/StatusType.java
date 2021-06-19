@@ -1,13 +1,14 @@
+/**
+ *
+ * @author aroue
+ */
 package aroueterra.EquipmentFramework.UI.inventory;
 
-public enum PropertyType {
+public enum StatusType {
     DAMAGE,
     ARMOR,
-    QUALITY,
     STRENGTH,
     AGILITY,
     INTELLIGENCE,
-    QUANTITY,
-    PRICE,
     RARITY;
 }

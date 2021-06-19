@@ -34,6 +34,7 @@ aroueterra\EquipmentFramework\UI\inventory\Inventory$2.class
 aroueterra\EquipmentFramework\UI\custom\MessageConsole$ConsoleOutputStream.class
 aroueterra\EquipmentFramework\UI\SetupFrame.class
 aroueterra\EquipmentFramework\UI\custom\BackgroundPanel.class
+aroueterra\EquipmentFramework\UI\DashboardFrame$14.class
 aroueterra\EquipmentFramework\UI\inventory\ItemType.class
 aroueterra\EquipmentFramework\UI\custom\MessageConsole.class
 aroueterra\EquipmentFramework\UI\inventory\Inventory.class
@@ -48,3 +49,4 @@ aroueterra\EquipmentFramework\utility\Compendium.class
 aroueterra\EquipmentFramework\player\Hero$1.class
 aroueterra\EquipmentFramework\UI\inventory\Inventory$3.class
 aroueterra\EquipmentFramework\UI\custom\CellPane$3.class
+aroueterra\EquipmentFramework\UI\DashboardFrame$13.class

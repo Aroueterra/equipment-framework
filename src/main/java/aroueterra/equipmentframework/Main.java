@@ -4,7 +4,7 @@ import aroueterra.EquipmentFramework.UI.DashboardFrame;
 import aroueterra.EquipmentFramework.UI.inventory.Inventory;
 import aroueterra.EquipmentFramework.player.Hero;
 import aroueterra.EquipmentFramework.utility.Compendium;
-import aroueterra.equipmentframework.UI.SetupFrame;
+import aroueterra.EquipmentFramework.UI.SetupFrame;
 import java.awt.Frame;
 //import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;

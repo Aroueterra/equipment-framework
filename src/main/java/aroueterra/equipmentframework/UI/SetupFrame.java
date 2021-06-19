@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package aroueterra.equipmentframework.UI;
+package aroueterra.EquipmentFramework.UI;
 
 import aroueterra.EquipmentFramework.Main;
 import aroueterra.EquipmentFramework.UI.DashboardFrame;
@@ -53,7 +53,11 @@ public class SetupFrame extends javax.swing.JFrame {
     public void CreateDashboard() {
         var compendium = generateCompendium();
         Inventory i = new Inventory(5, 5);
-        Hero hero = new Hero(txtName.getText(), 100, 100, 1000, i);
+        var name = txtName.getText();
+        while (name.length() < 12) {
+            name = " " + name;
+        }
+        Hero hero = new Hero(name, 100, 100, 1000, i);
         var dashboard = new DashboardFrame(hero, compendium);
         dashboard.setVisible(true);
         dashboard.toFront();
@@ -125,9 +129,11 @@ public class SetupFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         framePanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -135,7 +141,7 @@ public class SetupFrame extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -144,9 +150,9 @@ public class SetupFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         btnNewGame = new javax.swing.JButton();
-        btnLoadGame = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JSeparator();
+        jLabel8 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
+        btnLoadGame = new javax.swing.JButton();
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Sanctuary");
@@ -162,12 +168,29 @@ public class SetupFrame extends javax.swing.JFrame {
             .addGap(0, 193, Short.MAX_VALUE)
         );
 
+        jTextField1.setEditable(false);
+        jTextField1.setBackground(new java.awt.Color(0, 0, 0));
+        jTextField1.setForeground(new java.awt.Color(255, 215, 0));
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("Sanctuary");
+        jTextField1.setBorder(null);
+        jTextField1.setFocusable(false);
+        jTextField1.setVerifyInputWhenFocusTarget(false);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
         setMaximumSize(new java.awt.Dimension(520, 420));
         setMinimumSize(new java.awt.Dimension(520, 420));
         setPreferredSize(new java.awt.Dimension(520, 420));
         setResizable(false);
+
+        BufferedImage setup_IMG = null;
+        try {
+            setup_IMG = ImageIO.read(getClass().getResource("/images/bg_red.png"));
+            jPanel1 = new ImagePanel(setup_IMG);
+        } catch (IOException ex) {
+            Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         BufferedImage frame_img = null;
         try {
@@ -183,34 +206,40 @@ public class SetupFrame extends javax.swing.JFrame {
         framePanel.setLayout(framePanelLayout);
         framePanelLayout.setHorizontalGroup(
             framePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGap(0, 535, Short.MAX_VALUE)
         );
         framePanelLayout.setVerticalGroup(
             framePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 408, Short.MAX_VALUE)
         );
 
+        try {
+            BufferedImage setup_IMG2 = null;
+            setup_IMG2 = ImageIO.read(getClass().getResource("/images/bg_red.png"));
+            jPanel2 = new ImagePanel(setup_IMG2);
+        } catch (IOException ex) {
+            Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        jPanel2.setOpaque(false);
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));
 
+        jPanel6.setOpaque(false);
         jPanel6.setLayout(new java.awt.BorderLayout(50, 0));
 
+        jPanel4.setOpaque(false);
         jPanel4.setLayout(new java.awt.BorderLayout());
 
         jLabel2.setText("  ");
         jPanel4.add(jLabel2, java.awt.BorderLayout.NORTH);
 
+        jLabel3.setForeground(new java.awt.Color(255, 255, 204));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Equipment Framework");
-        jPanel4.add(jLabel3, java.awt.BorderLayout.PAGE_END);
+        jLabel3.setText("SANCTUARY");
+        jPanel4.add(jLabel3, java.awt.BorderLayout.CENTER);
 
-        jTextField1.setEditable(false);
-        jTextField1.setForeground(new java.awt.Color(255, 215, 0));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Sanctuary");
-        jTextField1.setBorder(null);
-        jTextField1.setFocusable(false);
-        jTextField1.setVerifyInputWhenFocusTarget(false);
-        jPanel4.add(jTextField1, java.awt.BorderLayout.CENTER);
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Equipment Framework");
+        jPanel4.add(jLabel7, java.awt.BorderLayout.PAGE_END);
 
         jPanel6.add(jPanel4, java.awt.BorderLayout.CENTER);
 
@@ -225,61 +254,47 @@ public class SetupFrame extends javax.swing.JFrame {
 
         jPanel5.setMaximumSize(new java.awt.Dimension(400, 120));
         jPanel5.setMinimumSize(new java.awt.Dimension(400, 120));
+        jPanel5.setOpaque(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(400, 120));
         jPanel5.setRequestFocusEnabled(false);
 
         jPanel8.setMaximumSize(new java.awt.Dimension(300, 108));
+        jPanel8.setOpaque(false);
         jPanel8.setPreferredSize(new java.awt.Dimension(300, 108));
+        jPanel8.setLayout(new java.awt.GridBagLayout());
 
         jLabel6.setText("Name");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(12, 21, 12, 21);
+        jPanel8.add(jLabel6, gridBagConstraints);
 
+        txtName.setBackground(new java.awt.Color(51, 51, 51));
         txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtName.setMaximumSize(new java.awt.Dimension(64, 26));
+        txtName.setPreferredSize(new java.awt.Dimension(144, 26));
+        jPanel8.add(txtName, new java.awt.GridBagConstraints());
 
-        btnNewGame.setText("New Game");
+        btnNewGame.setContentAreaFilled(false);
+        btnNewGame.setBorderPainted(false);
+        btnNewGame.setBackground(new java.awt.Color(102, 0, 0));
+        btnNewGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_newgame_normal.png"))); // NOI18N
+        btnNewGame.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_newgame_pressed.png"))); // NOI18N
+        btnNewGame.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_newgame_highlight.png"))); // NOI18N
+        btnNewGame.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_newgame_normal.png"))); // NOI18N
         btnNewGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewGameActionPerformed(evt);
             }
         });
-
-        btnLoadGame.setText("Load");
-        btnLoadGame.setMaximumSize(new java.awt.Dimension(88, 22));
-        btnLoadGame.setMinimumSize(new java.awt.Dimension(88, 22));
-        btnLoadGame.setPreferredSize(new java.awt.Dimension(88, 22));
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 213, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnNewGame, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnLoadGame, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(btnLoadGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNewGame)
-                .addContainerGap())
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel8.add(btnNewGame, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(12, 21, 12, 21);
+        jPanel8.add(jLabel8, gridBagConstraints);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -287,29 +302,47 @@ public class SetupFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                .addGap(32, 32, 32))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         jPanel2.add(jPanel5);
-        jPanel2.add(jSeparator2);
+
+        jPanel7.setOpaque(false);
+
+        btnLoadGame.setContentAreaFilled(false);
+        btnLoadGame.setBorderPainted(false);
+        btnLoadGame.setBackground(new java.awt.Color(51, 51, 0));
+        btnLoadGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_normal.png"))); // NOI18N
+        btnLoadGame.setMaximumSize(new java.awt.Dimension(88, 22));
+        btnLoadGame.setMinimumSize(new java.awt.Dimension(88, 22));
+        btnLoadGame.setPreferredSize(new java.awt.Dimension(204, 63));
+        btnLoadGame.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_pressed.png"))); // NOI18N
+        btnLoadGame.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_highlight.png"))); // NOI18N
+        btnLoadGame.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_normal.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 517, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(132, Short.MAX_VALUE)
+                .addComponent(btnLoadGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(64, 64, 64))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnLoadGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel7);
@@ -320,7 +353,7 @@ public class SetupFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(framePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addComponent(framePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -406,6 +439,8 @@ public class SetupFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -415,7 +450,6 @@ public class SetupFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables

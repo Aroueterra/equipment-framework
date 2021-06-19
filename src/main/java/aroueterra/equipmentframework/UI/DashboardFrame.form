@@ -273,7 +273,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="try {&#xa;    InputStream is = this.getClass().getResourceAsStream(&quot;/font/exocet.ttf&quot;);&#xa;    Font font_txtarea = Font.createFont(Font.TRUETYPE_FONT, is);&#xa;    Font sizedFont_txtarea = font_txtarea.deriveFont(18f);&#xa;    textarea_status.setFont(sizedFont_txtarea);&#xa;} catch (FontFormatException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}&#xa;&#xa;&#xa;MessageConsole mc = new MessageConsole(textarea_status);&#xa;mc.redirectOut(null, System.out);&#xa;mc.redirectErr(Color.RED, null);&#xa;mc.setMessageLines(100);"/>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="try {&#xa;    InputStream is = this.getClass().getResourceAsStream(&quot;/font/exocet.ttf&quot;);&#xa;    Font font_txtarea = Font.createFont(Font.TRUETYPE_FONT, is);&#xa;    Font sizedFont_txtarea = font_txtarea.deriveFont(18f);&#xa;    textarea_status.setFont(sizedFont_txtarea);&#xa;} catch (FontFormatException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}&#xa;//&#xa;//&#xa;//MessageConsole mc = new MessageConsole(textarea_status);&#xa;//mc.redirectOut(null, System.out);&#xa;//mc.redirectErr(Color.RED, null);&#xa;//mc.setMessageLines(100);"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
@@ -951,18 +951,24 @@
                                     <Property name="axis" type="int" value="0"/>
                                   </Layout>
                                   <SubComponents>
-                                    <Container class="javax.swing.JPanel" name="jPanel3">
+                                    <Container class="javax.swing.JPanel" name="detailsPanel">
                                       <Properties>
+                                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[240, 508]"/>
+                                        </Property>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                           <Dimension value="[240, 508]"/>
                                         </Property>
                                         <Property name="requestFocusEnabled" type="boolean" value="false"/>
                                       </Properties>
+                                      <AuxValues>
+                                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    BufferedImage statusImg = ImageIO.read(getClass().getResource(&quot;/images/status_panel.png&quot;));&#xa;    detailsPanel = new ImagePanel(statusImg);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}"/>
+                                      </AuxValues>
 
                                       <Layout>
                                         <DimensionLayout dim="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <EmptySpace min="0" pref="241" max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="240" max="32767" attributes="0"/>
                                           </Group>
                                         </DimensionLayout>
                                         <DimensionLayout dim="1">
@@ -972,20 +978,359 @@
                                         </DimensionLayout>
                                       </Layout>
                                     </Container>
-                                    <Container class="javax.swing.JPanel" name="jPanel4">
+                                    <Container class="javax.swing.JPanel" name="detailsBackground">
+                                      <AuxValues>
+                                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    BufferedImage detailsBackgroundImg = ImageIO.read(getClass().getResource(&quot;/images/status_panel_dark.png&quot;));&#xa;    detailsBackground = new ImagePanel(detailsBackgroundImg);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}"/>
+                                      </AuxValues>
 
-                                      <Layout>
-                                        <DimensionLayout dim="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <EmptySpace min="0" pref="303" max="32767" attributes="0"/>
-                                          </Group>
-                                        </DimensionLayout>
-                                        <DimensionLayout dim="1">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <EmptySpace min="0" pref="508" max="32767" attributes="0"/>
-                                          </Group>
-                                        </DimensionLayout>
-                                      </Layout>
+                                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+                                      <SubComponents>
+                                        <Component class="javax.swing.JLabel" name="jLabel3">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="4"/>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/status_strength.png"/>
+                                            </Property>
+                                            <Property name="toolTipText" type="java.lang.String" value=""/>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[94, 45]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="0" gridY="4" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel4">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="4"/>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/status_agility.png"/>
+                                            </Property>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[94, 45]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="0" gridY="5" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel5">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="4"/>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/status_intelligence.png"/>
+                                            </Property>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[94, 45]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="0" gridY="6" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JButton" name="btnAddStr">
+                                          <Properties>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_normal.png"/>
+                                            </Property>
+                                            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                                              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                                                <LineBorder roundedCorners="true"/>
+                                              </Border>
+                                            </Property>
+                                            <Property name="iconTextGap" type="int" value="0"/>
+                                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                                              <Insets value="[2, 2, 2, 2]"/>
+                                            </Property>
+                                            <Property name="pressedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_pressed.png"/>
+                                            </Property>
+                                            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_highlight.png"/>
+                                            </Property>
+                                            <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                          </Properties>
+                                          <Events>
+                                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddStrActionPerformed"/>
+                                          </Events>
+                                          <AuxValues>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//try {&#xa;//    Image img = ImageIO.read(getClass().getResource(&quot;/images/btn_accept.png&quot;));&#xa;//    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));&#xa;//    button_AddItem.setIcon(new ImageIcon(img));&#xa;//  } catch (Exception ex) {&#xa;//    System.out.println(ex);&#xa;//}"/>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="btnAddStr.setOpaque(false);&#xa;btnAddStr.setContentAreaFilled(false);&#xa;btnAddStr.setBorderPainted(false);"/>
+                                          </AuxValues>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="3" gridY="4" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="45" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JButton" name="btnAddAgi">
+                                          <Properties>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_normal.png"/>
+                                            </Property>
+                                            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                                              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                                                <LineBorder roundedCorners="true"/>
+                                              </Border>
+                                            </Property>
+                                            <Property name="iconTextGap" type="int" value="0"/>
+                                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                                              <Insets value="[2, 2, 2, 2]"/>
+                                            </Property>
+                                            <Property name="pressedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_pressed.png"/>
+                                            </Property>
+                                            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_highlight.png"/>
+                                            </Property>
+                                            <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                          </Properties>
+                                          <Events>
+                                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddAgiActionPerformed"/>
+                                          </Events>
+                                          <AuxValues>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//try {&#xa;//    Image img = ImageIO.read(getClass().getResource(&quot;/images/btn_accept.png&quot;));&#xa;//    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));&#xa;//    button_AddItem.setIcon(new ImageIcon(img));&#xa;//  } catch (Exception ex) {&#xa;//    System.out.println(ex);&#xa;//}"/>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="btnAddAgi.setOpaque(false);&#xa;btnAddAgi.setContentAreaFilled(false);&#xa;btnAddAgi.setBorderPainted(false);"/>
+                                          </AuxValues>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="3" gridY="5" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="45" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JButton" name="btnAddInt">
+                                          <Properties>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_normal.png"/>
+                                            </Property>
+                                            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                                              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                                                <LineBorder roundedCorners="true"/>
+                                              </Border>
+                                            </Property>
+                                            <Property name="iconTextGap" type="int" value="0"/>
+                                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                                              <Insets value="[2, 2, 2, 2]"/>
+                                            </Property>
+                                            <Property name="pressedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_pressed.png"/>
+                                            </Property>
+                                            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_add_highlight.png"/>
+                                            </Property>
+                                            <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/btn_accept_pressed.png"/>
+                                            </Property>
+                                          </Properties>
+                                          <Events>
+                                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddIntActionPerformed"/>
+                                          </Events>
+                                          <AuxValues>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//try {&#xa;//    Image img = ImageIO.read(getClass().getResource(&quot;/images/btn_accept.png&quot;));&#xa;//    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));&#xa;//    button_AddItem.setIcon(new ImageIcon(img));&#xa;//  } catch (Exception ex) {&#xa;//    System.out.println(ex);&#xa;//}"/>
+                                            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="btnAddInt.setOpaque(false);&#xa;btnAddInt.setContentAreaFilled(false);&#xa;btnAddInt.setBorderPainted(false);"/>
+                                          </AuxValues>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="3" gridY="6" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="45" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblInt">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                            <Property name="text" type="java.lang.String" value="            "/>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="2" gridY="6" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="26" insetsBottom="0" insetsRight="26" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblAgi">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                            <Property name="text" type="java.lang.String" value="            "/>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="2" gridY="5" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="26" insetsBottom="0" insetsRight="26" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblStr">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="2" gridY="4" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="26" insetsBottom="0" insetsRight="26" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel9">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                            <Property name="text" type="java.lang.String" value="     Agility"/>
+                                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[36757, 36757]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="5" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="2" insetsBottom="0" insetsRight="2" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel10">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                            <Property name="text" type="java.lang.String" value="Intelligence"/>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="6" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="7" insetsBottom="0" insetsRight="7" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel11">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                            <Property name="text" type="java.lang.String" value="    Strength"/>
+                                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[36757, 36757]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="4" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="2" insetsBottom="0" insetsRight="2" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblName">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="0" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel6">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="4"/>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/status_damage.png"/>
+                                            </Property>
+                                            <Property name="toolTipText" type="java.lang.String" value=""/>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[94, 45]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel7">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="4"/>
+                                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                              <Image iconType="3" name="/images/status_armor.png"/>
+                                            </Property>
+                                            <Property name="toolTipText" type="java.lang.String" value=""/>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[94, 45]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel12">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                            <Property name="text" type="java.lang.String" value="       Armor"/>
+                                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[36757, 36757]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="2" insetsBottom="0" insetsRight="2" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="jLabel13">
+                                          <Properties>
+                                            <Property name="horizontalAlignment" type="int" value="11"/>
+                                            <Property name="text" type="java.lang.String" value="      Damage"/>
+                                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[36757, 36757]"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="2" insetsBottom="0" insetsRight="2" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblArmor">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="2" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="26" insetsBottom="0" insetsRight="26" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                        <Component class="javax.swing.JLabel" name="lblDamage">
+                                          <Properties>
+                                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                              <Color blue="cc" green="ff" red="ff" type="rgb"/>
+                                            </Property>
+                                          </Properties>
+                                          <Constraints>
+                                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                                              <GridBagConstraints gridX="2" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="26" insetsBottom="0" insetsRight="26" anchor="10" weightX="0.0" weightY="0.0"/>
+                                            </Constraint>
+                                          </Constraints>
+                                        </Component>
+                                      </SubComponents>
                                     </Container>
                                   </SubComponents>
                                 </Container>
@@ -1009,7 +1354,7 @@
                                 </Property>
                               </Properties>
                               <AuxValues>
-                                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BufferedImage equipmentImg = null;&#xa;try {&#xa;    equipmentImg = ImageIO.read(getClass().getResource(&quot;/images/panel_bg.png&quot;));&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}&#xa;equipmentCard = new ImagePanel(equipmentImg);&#xa;equipmentCard.setLayout(new java.awt.GridBagLayout());"/>
+                                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BufferedImage equipmentImg = null;&#xa;try {&#xa;    equipmentImg = ImageIO.read(getClass().getResource(&quot;/images/equipment_panel.png&quot;));&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}&#xa;equipmentCard = new ImagePanel(equipmentImg);&#xa;equipmentCard.setLayout(new java.awt.GridBagLayout());"/>
                                 <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="equipmentCard.setMaximumSize(new Dimension(800, 800));&#xa;equipmentCard.setMinimumSize(new Dimension(500, 500));"/>
                               </AuxValues>
                               <Constraints>

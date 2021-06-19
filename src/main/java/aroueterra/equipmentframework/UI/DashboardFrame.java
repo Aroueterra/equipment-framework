@@ -16,6 +16,7 @@ import aroueterra.EquipmentFramework.UI.custom.ZoomPanel;
 import aroueterra.EquipmentFramework.player.Shop;
 import aroueterra.EquipmentFramework.UI.custom.ShopInventory;
 import aroueterra.EquipmentFramework.UI.inventory.ItemType;
+import aroueterra.EquipmentFramework.UI.inventory.PropertyType;
 import aroueterra.EquipmentFramework.utility.Compendium;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,6 +44,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.UIManager;
@@ -75,9 +77,8 @@ public class DashboardFrame extends javax.swing.JFrame {
         this.hero = hero;
         this.compendium = compendium;
         initComponents();
-        hero.setComponents(setupEquipSlots());
-        updateHealth(hero.getHealth());
-        coinField.setText(Integer.toString(hero.getGold()));
+
+        heroInit();
 
         this.shop = new Shop(0, new Inventory(5, 5), hero, shopCoinField, coinField);
         BufferedImage shopslot_bg = null, slot_bg = null;
@@ -90,6 +91,16 @@ public class DashboardFrame extends javax.swing.JFrame {
         CreateCells(slot_bg, inventoryCard, hero, 5);
         CreateCells(shopslot_bg, shopPanel, shop, 5);
         setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+    }
+
+    private void heroInit() {
+        registerComponents();
+        hero.balanceStatus();
+        hero.getStatus();
+        lblName.setText(hero.getName());
+        updateLabelMessage();
+        updateHealth(hero.getHealth());
+        coinField.setText(Integer.toString(hero.getGold()));
     }
 
     //Create hero slots
@@ -178,16 +189,18 @@ public class DashboardFrame extends javax.swing.JFrame {
         }
     }
 
-    public HashMap<ItemType, CellPane> setupEquipSlots() {
+    private HashMap<PropertyType, JLabel> collectStatusLabels() {
+        var statusLabels = new HashMap<PropertyType, JLabel>();
+        statusLabels.put(PropertyType.DAMAGE, (JLabel) lblDamage);
+        statusLabels.put(PropertyType.ARMOR, (JLabel) lblArmor);
+        statusLabels.put(PropertyType.STRENGTH, (JLabel) lblStr);
+        statusLabels.put(PropertyType.AGILITY, (JLabel) lblAgi);
+        statusLabels.put(PropertyType.INTELLIGENCE, (JLabel) lblInt);
+        return statusLabels;
+    }
+
+    private HashMap<ItemType, CellPane> setupEquipSlots() {
         var equipmentSlots = new HashMap<ItemType, CellPane>();
-        BufferedImage eq_img = null, inner_img = null, wp_img = null;
-        try {
-            wp_img = ImageIO.read(getClass().getResource("/images/slot_weapon.png"));
-            eq_img = ImageIO.read(getClass().getResource("/images/slot_equips.png"));
-            inner_img = ImageIO.read(getClass().getResource("/images/slot_border.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
         equipmentSlots.put(ItemType.NECK, (CellPane) neckPanel);
         equipmentSlots.put(ItemType.HEAD, (CellPane) headPanel);
         equipmentSlots.put(ItemType.WEAPON, (CellPane) leftWeaponPanel);
@@ -197,13 +210,19 @@ public class DashboardFrame extends javax.swing.JFrame {
         equipmentSlots.put(ItemType.FEET, (CellPane) feetPanel);
         equipmentSlots.put(ItemType.HANDS, (CellPane) handPanel);
         return equipmentSlots;
-//        leftWeapon = new ImagePanel(wp_img);
-//        rightWeapon = new ImagePanel(wp_img);
-//        headPanel = new ImagePanel(eq_img);
-//        chestPanel = new ImagePanel(eq_img);
-//        neckPanel = new ImagePanel(eq_img);
-//        handPanel = new ImagePanel(eq_img);
-//        feetPanel = new ImagePanel(eq_img);
+    }
+
+    private void updateLabelMessage() {
+        lblDamage.setText(Integer.toString(hero.getDamage()));
+        lblArmor.setText(Integer.toString(hero.getArmor()));
+        lblStr.setText(Integer.toString(hero.getStrength()));
+        lblAgi.setText(Integer.toString(hero.getAgility()));
+        lblInt.setText(Integer.toString(hero.getIntelligence()));
+    }
+
+    private void registerComponents() {
+        hero.setEquipComponents(setupEquipSlots());
+        hero.setLabelComponents(collectStatusLabels());
     }
 
     private void randomizeShop(Compendium[] compendium, int max, int min) {
@@ -347,8 +366,27 @@ public class DashboardFrame extends javax.swing.JFrame {
         rightCards = new javax.swing.JPanel();
         statusCard = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        detailsPanel = new javax.swing.JPanel();
+        detailsBackground = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        btnAddStr = new javax.swing.JButton();
+        btnAddAgi = new javax.swing.JButton();
+        btnAddInt = new javax.swing.JButton();
+        lblInt = new javax.swing.JLabel();
+        lblAgi = new javax.swing.JLabel();
+        lblStr = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        lblArmor = new javax.swing.JLabel();
+        lblDamage = new javax.swing.JLabel();
         equipmentCard = new javax.swing.JPanel();
         leftWeaponPanel = new javax.swing.JPanel();
         leftWeapon = new javax.swing.JPanel();
@@ -505,11 +543,12 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        MessageConsole mc = new MessageConsole(textarea_status);
-        mc.redirectOut(null, System.out);
-        mc.redirectErr(Color.RED, null);
-        mc.setMessageLines(100);
+        //
+        //
+        //MessageConsole mc = new MessageConsole(textarea_status);
+        //mc.redirectOut(null, System.out);
+        //mc.redirectErr(Color.RED, null);
+        //mc.setMessageLines(100);
 
         scroll_WorkArea.setBackground(new java.awt.Color(102, 102, 102));
         scroll_WorkArea.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -852,34 +891,256 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(240, 508));
-        jPanel3.setRequestFocusEnabled(false);
+        try {
+            BufferedImage statusImg = ImageIO.read(getClass().getResource("/images/status_panel.png"));
+            detailsPanel = new ImagePanel(statusImg);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        detailsPanel.setMinimumSize(new java.awt.Dimension(240, 508));
+        detailsPanel.setPreferredSize(new java.awt.Dimension(240, 508));
+        detailsPanel.setRequestFocusEnabled(false);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 241, Short.MAX_VALUE)
+        javax.swing.GroupLayout detailsPanelLayout = new javax.swing.GroupLayout(detailsPanel);
+        detailsPanel.setLayout(detailsPanelLayout);
+        detailsPanelLayout.setHorizontalGroup(
+            detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 240, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        detailsPanelLayout.setVerticalGroup(
+            detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 508, Short.MAX_VALUE)
         );
 
-        jPanel2.add(jPanel3);
+        jPanel2.add(detailsPanel);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 303, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 508, Short.MAX_VALUE)
-        );
+        try {
+            BufferedImage detailsBackgroundImg = ImageIO.read(getClass().getResource("/images/status_panel_dark.png"));
+            detailsBackground = new ImagePanel(detailsBackgroundImg);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        detailsBackground.setLayout(new java.awt.GridBagLayout());
 
-        jPanel2.add(jPanel4);
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/status_strength.png"))); // NOI18N
+        jLabel3.setToolTipText("");
+        jLabel3.setPreferredSize(new java.awt.Dimension(94, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        detailsBackground.add(jLabel3, gridBagConstraints);
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/status_agility.png"))); // NOI18N
+        jLabel4.setPreferredSize(new java.awt.Dimension(94, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        detailsBackground.add(jLabel4, gridBagConstraints);
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/status_intelligence.png"))); // NOI18N
+        jLabel5.setPreferredSize(new java.awt.Dimension(94, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        detailsBackground.add(jLabel5, gridBagConstraints);
+
+        btnAddStr.setOpaque(false);
+        btnAddStr.setContentAreaFilled(false);
+        btnAddStr.setBorderPainted(false);
+        btnAddStr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_normal.png"))); // NOI18N
+        btnAddStr.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        btnAddStr.setIconTextGap(0);
+        btnAddStr.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnAddStr.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_pressed.png"))); // NOI18N
+        btnAddStr.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_highlight.png"))); // NOI18N
+        btnAddStr.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        btnAddStr.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        //try {
+            //    Image img = ImageIO.read(getClass().getResource("/images/btn_accept.png"));
+            //    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));
+            //    button_AddItem.setIcon(new ImageIcon(img));
+            //  } catch (Exception ex) {
+            //    System.out.println(ex);
+            //}
+        btnAddStr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddStrActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 45);
+        detailsBackground.add(btnAddStr, gridBagConstraints);
+
+        btnAddAgi.setOpaque(false);
+        btnAddAgi.setContentAreaFilled(false);
+        btnAddAgi.setBorderPainted(false);
+        btnAddAgi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_normal.png"))); // NOI18N
+        btnAddAgi.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        btnAddAgi.setIconTextGap(0);
+        btnAddAgi.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnAddAgi.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_pressed.png"))); // NOI18N
+        btnAddAgi.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_highlight.png"))); // NOI18N
+        btnAddAgi.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        btnAddAgi.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        //try {
+            //    Image img = ImageIO.read(getClass().getResource("/images/btn_accept.png"));
+            //    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));
+            //    button_AddItem.setIcon(new ImageIcon(img));
+            //  } catch (Exception ex) {
+            //    System.out.println(ex);
+            //}
+        btnAddAgi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAgiActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 45);
+        detailsBackground.add(btnAddAgi, gridBagConstraints);
+
+        btnAddInt.setOpaque(false);
+        btnAddInt.setContentAreaFilled(false);
+        btnAddInt.setBorderPainted(false);
+        btnAddInt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_normal.png"))); // NOI18N
+        btnAddInt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        btnAddInt.setIconTextGap(0);
+        btnAddInt.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnAddInt.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_pressed.png"))); // NOI18N
+        btnAddInt.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_add_highlight.png"))); // NOI18N
+        btnAddInt.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        btnAddInt.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        //try {
+            //    Image img = ImageIO.read(getClass().getResource("/images/btn_accept.png"));
+            //    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));
+            //    button_AddItem.setIcon(new ImageIcon(img));
+            //  } catch (Exception ex) {
+            //    System.out.println(ex);
+            //}
+        btnAddInt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddIntActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 45);
+        detailsBackground.add(btnAddInt, gridBagConstraints);
+
+        lblInt.setForeground(new java.awt.Color(255, 255, 204));
+        lblInt.setText("            ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(0, 26, 0, 26);
+        detailsBackground.add(lblInt, gridBagConstraints);
+
+        lblAgi.setForeground(new java.awt.Color(255, 255, 204));
+        lblAgi.setText("            ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 26, 0, 26);
+        detailsBackground.add(lblAgi, gridBagConstraints);
+
+        lblStr.setForeground(new java.awt.Color(255, 255, 204));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 26, 0, 26);
+        detailsBackground.add(lblStr, gridBagConstraints);
+
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel9.setText("     Agility");
+        jLabel9.setMaximumSize(new java.awt.Dimension(36757, 36757));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        detailsBackground.add(jLabel9, gridBagConstraints);
+
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel10.setText("Intelligence");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
+        detailsBackground.add(jLabel10, gridBagConstraints);
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel11.setText("    Strength");
+        jLabel11.setMaximumSize(new java.awt.Dimension(36757, 36757));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        detailsBackground.add(jLabel11, gridBagConstraints);
+
+        lblName.setForeground(new java.awt.Color(255, 255, 204));
+        lblName.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        detailsBackground.add(lblName, gridBagConstraints);
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/status_damage.png"))); // NOI18N
+        jLabel6.setToolTipText("");
+        jLabel6.setPreferredSize(new java.awt.Dimension(94, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        detailsBackground.add(jLabel6, gridBagConstraints);
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/status_armor.png"))); // NOI18N
+        jLabel7.setToolTipText("");
+        jLabel7.setPreferredSize(new java.awt.Dimension(94, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        detailsBackground.add(jLabel7, gridBagConstraints);
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel12.setText("       Armor");
+        jLabel12.setMaximumSize(new java.awt.Dimension(36757, 36757));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        detailsBackground.add(jLabel12, gridBagConstraints);
+
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel13.setText("      Damage");
+        jLabel13.setMaximumSize(new java.awt.Dimension(36757, 36757));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        detailsBackground.add(jLabel13, gridBagConstraints);
+
+        lblArmor.setForeground(new java.awt.Color(255, 255, 204));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 26, 0, 26);
+        detailsBackground.add(lblArmor, gridBagConstraints);
+
+        lblDamage.setForeground(new java.awt.Color(255, 255, 204));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 26, 0, 26);
+        detailsBackground.add(lblDamage, gridBagConstraints);
+
+        jPanel2.add(detailsBackground);
 
         statusCard.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -896,7 +1157,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         equipmentCard.setPreferredSize(new java.awt.Dimension(700, 500));
         BufferedImage equipmentImg = null;
         try {
-            equipmentImg = ImageIO.read(getClass().getResource("/images/panel_bg.png"));
+            equipmentImg = ImageIO.read(getClass().getResource("/images/equipment_panel.png"));
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1546,6 +1807,22 @@ public class DashboardFrame extends javax.swing.JFrame {
         updateHealth(hero.getHealth());
     }//GEN-LAST:event_healthIconMouseClicked
 
+    private void btnAddStrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStrActionPerformed
+        hero.setStrength(hero.getStrength() + 1);
+        updateLabelMessage();
+
+    }//GEN-LAST:event_btnAddStrActionPerformed
+
+    private void btnAddAgiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAgiActionPerformed
+        hero.setAgility(hero.getAgility() + 1);
+        updateLabelMessage();
+    }//GEN-LAST:event_btnAddAgiActionPerformed
+
+    private void btnAddIntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddIntActionPerformed
+        hero.setIntelligence(hero.getIntelligence() + 1);
+        updateLabelMessage();
+    }//GEN-LAST:event_btnAddIntActionPerformed
+
 //    public static void main(String args[]) {
 //
 //        java.awt.EventQueue.invokeLater(() -> {
@@ -1554,6 +1831,9 @@ public class DashboardFrame extends javax.swing.JFrame {
 //        });
 //    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddAgi;
+    private javax.swing.JButton btnAddInt;
+    private javax.swing.JButton btnAddStr;
     private javax.swing.JToggleButton btnRefresh;
     private javax.swing.JButton button_AddItem;
     private javax.swing.JMenuItem buyContext;
@@ -1568,6 +1848,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel coinStatus;
     private javax.swing.JPanel coinStatus1;
     private javax.swing.JLabel credits;
+    private javax.swing.JPanel detailsBackground;
+    private javax.swing.JPanel detailsPanel;
     private javax.swing.JMenuItem discardContext;
     private javax.swing.JToggleButton emptyToggle;
     private javax.swing.JToggleButton emptyToggle1;
@@ -1591,12 +1873,26 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu inventoryPop;
     private javax.swing.JToggleButton inventoryToggle;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel lblAgi;
+    private javax.swing.JLabel lblArmor;
+    private javax.swing.JLabel lblDamage;
+    private javax.swing.JLabel lblInt;
     private javax.swing.JLabel lblLeftSplit;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblStr;
     private javax.swing.JPanel leftCards;
     private javax.swing.JPanel leftSplit;
     private javax.swing.JPanel leftWeapon;

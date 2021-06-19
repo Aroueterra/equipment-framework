@@ -7,9 +7,11 @@ import static aroueterra.EquipmentFramework.UI.inventory.ItemType.*;
 import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.*;
 import java.awt.Component;
 import java.util.Map;
+import javax.swing.JLabel;
 
 public class Hero {
 
+    Map<PropertyType, JLabel> statusLabels;
     Map<ItemType, CellPane> components;
     private Item[] equipment = new Item[8];
     private Item previous;
@@ -20,6 +22,8 @@ public class Hero {
     private int experience;
     public Inventory inventory;
     //status
+    private int damage;
+    private int armor;
     private int agility;
     private int strength;
     private int intelligence;
@@ -65,6 +69,7 @@ public class Hero {
         }
         var success = equipItem(item);
         if (success) {
+            //balanceStatus(item);
             System.out.println("The item was equipped");
             inventory.discard(row, column);
             return true;
@@ -82,7 +87,6 @@ public class Hero {
             slot.setImage("/images/slot_empty.png");
             slot.setImage(item.getAsset());
         }
-        var index = 0;
         return switch (item.getItemType()) {
             case NECK ->
                 inventoryParity(0, item);
@@ -118,6 +122,7 @@ public class Hero {
             }
         }
         equipment[index] = item;
+        balanceStatus();
         return true;
     }
 
@@ -164,8 +169,64 @@ public class Hero {
         return experience;
     }
 
-    public void setComponents(Map<ItemType, CellPane> components) {
+    public void balanceStatus(Item item) {
+        if (item != null) {
+            if (item.getItemType() == ItemType.WEAPON) {
+                setDamage(getDamage() + item.getProperty(DAMAGE));
+                updateLabels(PropertyType.DAMAGE);
+            } else {
+                setArmor(getArmor() + item.getProperty(ARMOR));
+                updateLabels(PropertyType.ARMOR);
+            }
+        }
+    }
+
+    public void balanceStatus() {
+        setDamage(0);
+        setArmor(0);
+        for (var item : equipment) {
+            if (item != null) {
+                if (item.getItemType() == ItemType.WEAPON) {
+                    setDamage(getDamage() + item.getProperty(DAMAGE));
+                    updateLabels(PropertyType.DAMAGE);
+                } else {
+                    setArmor(getArmor() + item.getProperty(ARMOR));
+                    updateLabels(PropertyType.ARMOR);
+                }
+            }
+        }
+    }
+
+    public void updateLabels(PropertyType type) {
+        var label = statusLabels.get(type);
+        switch (type) {
+            case DAMAGE ->
+                label.setText(Integer.toString(getDamage()));
+            case ARMOR ->
+                label.setText(Integer.toString(getArmor()));
+            case STRENGTH ->
+                label.setText(Integer.toString(getStrength()));
+            case AGILITY ->
+                label.setText(Integer.toString(getAgility()));
+            case INTELLIGENCE ->
+                label.setText(Integer.toString(getIntelligence()));
+        }
+    }
+
+    public void getStatus() {
+        System.out.println("DAM " + getDamage());
+        System.out.println("ARM " + getArmor());
+        System.out.println("STR " + getStrength());
+        System.out.println("AGI " + getAgility());
+        System.out.println("INT " + getIntelligence());
+    }
+
+    public void setEquipComponents(Map<ItemType, CellPane> components) {
         this.components = components;
+    }
+
+    public void setLabelComponents(Map<PropertyType, JLabel> statusLabels) {
+        this.statusLabels = statusLabels;
     }
 
     public void setName(String name) {
@@ -186,5 +247,45 @@ public class Hero {
 
     public void setExperience(int experience) {
         this.experience = experience;
+    }
+
+    public int getAgility() {
+        return agility;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setAgility(int agility) {
+        this.agility = agility;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getArmor() {
+        return armor;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public void setArmor(int armor) {
+        this.armor = armor;
     }
 }

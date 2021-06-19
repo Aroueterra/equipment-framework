@@ -106,7 +106,7 @@
     {
       "name": "Mage Robes",
       "path": "/images/items/arm-rob.png",
-      "type": "armor",
+      "type": "armor-chest",
       "p1": 10,
       "p2": 1,
       "p3": 100
@@ -121,8 +121,8 @@
     },
     {
       "name": "Cloak of Shadows",
-      "path": "/images/items/arm-hlm.png",
-      "type": "armor-nech",
+      "path": "/images/items/arm-clk.png",
+      "type": "armor-neck",
       "p1": 10,
       "p2": 4,
       "p3": 100
