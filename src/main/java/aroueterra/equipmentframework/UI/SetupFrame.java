@@ -45,9 +45,16 @@ public class SetupFrame extends javax.swing.JFrame {
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+            BufferedImage icon = null;
+            icon = ImageIO.read(getClass().getResource("/images/icon_large.png"));
+            this.setIconImage(icon);
+
+        } catch (IOException ex) {
+            Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setFont(new FontUIResource(exocet), new FontUIResource(exocet_s));
         initComponents();
-
     }
 
     public void CreateDashboard() {
@@ -323,7 +330,6 @@ public class SetupFrame extends javax.swing.JFrame {
         btnLoadGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_normal.png"))); // NOI18N
         btnLoadGame.setMaximumSize(new java.awt.Dimension(88, 22));
         btnLoadGame.setMinimumSize(new java.awt.Dimension(88, 22));
-        btnLoadGame.setPreferredSize(new java.awt.Dimension(204, 63));
         btnLoadGame.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_pressed.png"))); // NOI18N
         btnLoadGame.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_highlight.png"))); // NOI18N
         btnLoadGame.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_normal.png"))); // NOI18N

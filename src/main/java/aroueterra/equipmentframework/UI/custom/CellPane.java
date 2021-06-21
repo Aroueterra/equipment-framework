@@ -7,6 +7,7 @@ package aroueterra.EquipmentFramework.UI.custom;
 
 import aroueterra.EquipmentFramework.UI.DashboardFrame;
 import aroueterra.EquipmentFramework.UI.inventory.ItemType;
+import aroueterra.EquipmentFramework.UI.inventory.PropertyType;
 import aroueterra.EquipmentFramework.player.Hero;
 import aroueterra.EquipmentFramework.player.Shop;
 import java.awt.BorderLayout;
@@ -51,6 +52,19 @@ public class CellPane extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createLineBorder(Color.RED)));
+
+                if (type == type.WEAPON) {
+                    if (hero.retrieveEquipment(2) != null) {
+                        System.out.println("Your main weapon provides " + hero.retrieveEquipment(2).getProperty(PropertyType.DAMAGE) + " damage");
+                    }
+
+                } else if (type == type.OFFHAND) {
+                    if (hero.retrieveEquipment(4) != null) {
+                        System.out.println("Your offhand provides " + hero.retrieveEquipment(4).getProperty(PropertyType.ARMOR) + " defense");
+                    }
+                } else {
+                    System.out.println("The armor provides " + "provides 10 defense");
+                }
 //                if (hero.inventory.retrieve(row, column) != null) {
 //                    System.out.println("" + hero.inventory.retrieve(row, column).getName() + " is here");
 //                }
@@ -174,5 +188,26 @@ public class CellPane extends JPanel {
 
     public int getColumn() {
         return column;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
+    public void setType(ItemType type) {
+        this.type = type;
+    }
+
+    public void setInnerImage(String assetPath) {
+        var comp = getComponents();
+        for (var i : comp) {
+            var slot = ((ImagePanel) i);
+            if (assetPath == null) {
+                slot.setImage("/images/slot_empty.png");
+            } else {
+                slot.setImage(assetPath);
+            }
+
+        }
     }
 }

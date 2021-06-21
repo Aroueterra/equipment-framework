@@ -20,11 +20,15 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class ZoomPanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
 
-    private final BufferedImage image;
+    private BufferedImage image;
 
     private double zoomFactor = 1;
     private double prevZoomFactor = 1;
@@ -37,6 +41,11 @@ public class ZoomPanel extends JPanel implements MouseWheelListener, MouseListen
     private int yDiff;
     private Point startPoint;
 
+    public ZoomPanel(BufferedImage image, String noControl) {
+        this.image = image;
+
+    }
+
     public ZoomPanel(BufferedImage image) {
 
         this.image = image;
@@ -48,6 +57,19 @@ public class ZoomPanel extends JPanel implements MouseWheelListener, MouseListen
         addMouseWheelListener(this);
         addMouseMotionListener(this);
         addMouseListener(this);
+    }
+
+    public void setImage(String path) {
+        BufferedImage newImage = null;
+        try {
+            newImage = ImageIO.read(getClass().getResource(path));
+        } catch (IOException ex) {
+            Logger.getLogger(ImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.image = newImage;
+        this.setOpaque(false);
+        this.revalidate();
+        this.repaint();
     }
 
     @Override

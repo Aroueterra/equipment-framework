@@ -59,7 +59,11 @@ public class Inventory {
         var comp = retrieveCell(row, column).getComponents();
         for (var i : comp) {
             var slot = ((ImagePanel) i);
-            slot.setImage(assetPath);
+            if (assetPath == null) {
+                slot.setImage(item.getAsset());
+            } else {
+                slot.setImage(assetPath);
+            }
         }
         items[row][column] = item;
         return true;

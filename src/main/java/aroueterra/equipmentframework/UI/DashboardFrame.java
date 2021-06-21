@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Image;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -81,10 +82,12 @@ public class DashboardFrame extends javax.swing.JFrame {
         heroInit();
 
         this.shop = new Shop(0, new Inventory(5, 5), hero, shopCoinField, coinField);
-        BufferedImage shopslot_bg = null, slot_bg = null;
+        BufferedImage shopslot_bg = null, slot_bg = null, icon = null;
         try {
             shopslot_bg = ImageIO.read(getClass().getResource("/images/slot_paper.png"));
             slot_bg = ImageIO.read(getClass().getResource("/images/slot.png"));
+            icon = ImageIO.read(getClass().getResource("/images/icon_large.png"));
+            this.setIconImage(icon);
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -177,15 +180,20 @@ public class DashboardFrame extends javax.swing.JFrame {
     private void updateHealth(int health) {
         healthField.setText(Integer.toString(health));
         if (health > 76) {
-            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_100.png")));
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_100.png")));
+            ((ZoomPanel) orb).setImage("/images/health_100.png");
         } else if (health > 51) {
-            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_75.png")));
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_75.png")));
+            ((ZoomPanel) orb).setImage("/images/health_75.png");
         } else if (health > 26) {
-            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_50.png")));
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_50.png")));
+            ((ZoomPanel) orb).setImage("/images/health_50.png");
         } else if (health > 10) {
-            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_25.png")));
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_25.png")));
+            ((ZoomPanel) orb).setImage("/images/health_25.png");
         } else {
-            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_0.png")));
+            healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_0.png")));
+            ((ZoomPanel) orb).setImage("/images/health_0.png");
         }
     }
 
@@ -223,6 +231,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     private void registerComponents() {
         hero.setEquipComponents(setupEquipSlots());
         hero.setLabelComponents(collectStatusLabels());
+
     }
 
     private void randomizeShop(Compendium[] compendium, int max, int min) {
@@ -332,15 +341,28 @@ public class DashboardFrame extends javax.swing.JFrame {
         shopPop = new javax.swing.JPopupMenu();
         buyContext = new javax.swing.JMenuItem();
         sellContext = new javax.swing.JMenuItem();
+        unequipContext = new javax.swing.JMenuItem();
+        equipPop = new javax.swing.JPopupMenu();
+        button_AddItem = new javax.swing.JButton();
+        credits = new javax.swing.JLabel();
         wrappingPanel = new javax.swing.JPanel();
-        workPanel = new javax.swing.JPanel();
+        menuPanel = new javax.swing.JPanel();
+        headerPanel = new javax.swing.JPanel();
+        jLayeredPane2 = new javax.swing.JLayeredPane();
+        orbHolder = new javax.swing.JPanel();
+        orb = new javax.swing.JPanel();
+        headerHolder = new javax.swing.JPanel();
+        header = new javax.swing.JPanel();
+        workHolder = new javax.swing.JPanel();
         scroll_Logs = new javax.swing.JScrollPane();
         textarea_status = new javax.swing.JTextArea();
+        workPanel = new javax.swing.JPanel();
         scroll_WorkArea = new javax.swing.JScrollPane();
         splitPanel_WorkArea = new javax.swing.JSplitPane();
         leftSplit = new javax.swing.JPanel();
         leftCards = new javax.swing.JPanel();
         worldCard = new javax.swing.JPanel();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
         worldPanel = new javax.swing.JPanel();
         inventoryCard = new javax.swing.JPanel();
         lblLeftSplit = new javax.swing.JLabel();
@@ -416,11 +438,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         coinHolder1 = new javax.swing.JPanel();
         shopCoinField = new javax.swing.JTextField();
         spacer3 = new javax.swing.JLabel();
-        credits = new javax.swing.JLabel();
-        menuPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        cmb_AddEquip = new javax.swing.JComboBox<>();
-        button_AddItem = new javax.swing.JButton();
+        credit = new javax.swing.JLabel();
 
         inventoryPop.setBackground(new java.awt.Color(102, 102, 102));
         inventoryPop.setForeground(new java.awt.Color(255, 255, 255));
@@ -504,6 +522,83 @@ public class DashboardFrame extends javax.swing.JFrame {
         sellContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/gain.png"))); // NOI18N
         sellContext.setText("Barter?");
 
+        unequipContext.setBackground(new java.awt.Color(255, 0, 0));
+        unequipContext.setForeground(new java.awt.Color(255, 204, 204));
+        unequipContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/unequip.png"))); // NOI18N
+        unequipContext.setText("Remove");
+
+        unequipContext.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Component invoker = equipPop.getInvoker();
+                var cell = (CellPane) invoker;
+                var coordinates = hero.inventory.checkFreeSlots();
+
+                int index = 0;
+                switch (cell.getType()) {
+                    case NECK ->
+                    index = 0;
+                    case HEAD ->
+                    index = 1;
+                    case WEAPON ->
+                    index = 2;
+                    case CHEST ->
+                    index = 3;
+                    case OFFHAND ->
+                    index = 4;
+                    case LOWER ->
+                    index = 5;
+                    case FEET ->
+                    index = 6;
+                    case HANDS ->
+                    index = 7;
+                    default ->
+                    index = 0;
+                }
+                var item = hero.retrieveEquipment(index);
+                if(coordinates == null || item == null){
+                    System.out.println("It cannot be removed");
+                    return;
+                }
+
+                hero.inventory.store(item, coordinates.get("row"), coordinates.get("column"), item.getAsset());
+                hero.unequipItem(index);
+                cell.setInnerImage(null);
+                hero.balanceStatus();
+                System.out.println("The item was unequipped");
+            }
+        });
+        equipPop.add(unequipContext);
+        equipPop.setBackground(new java.awt.Color(102, 102, 102));
+        equipPop.setForeground(new java.awt.Color(255, 255, 255));
+
+        button_AddItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_normal.png"))); // NOI18N
+        button_AddItem.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        button_AddItem.setIconTextGap(0);
+        button_AddItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        button_AddItem.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        button_AddItem.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_highlight.png"))); // NOI18N
+        button_AddItem.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        button_AddItem.setOpaque(false);
+        button_AddItem.setContentAreaFilled(false);
+        button_AddItem.setBorderPainted(false);
+        button_AddItem.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
+        //try {
+            //    Image img = ImageIO.read(getClass().getResource("/images/btn_accept.png"));
+            //    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));
+            //    button_AddItem.setIcon(new ImageIcon(img));
+            //  } catch (Exception ex) {
+            //    System.out.println(ex);
+            //}
+        button_AddItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_AddItemActionPerformed(evt);
+            }
+        });
+
+        credits.setForeground(new java.awt.Color(255, 255, 255));
+        credits.setText("August Florese (Copyright 2021)");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Equipment Framework");
         setBackground(java.awt.Color.white);
@@ -513,11 +608,113 @@ public class DashboardFrame extends javax.swing.JFrame {
         wrappingPanel.setBackground(new java.awt.Color(102, 102, 102));
         wrappingPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         wrappingPanel.setForeground(new java.awt.Color(255, 255, 255));
+        wrappingPanel.setLayout(new java.awt.BorderLayout());
 
-        workPanel.setBackground(new java.awt.Color(102, 102, 102));
-        workPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        workPanel.setForeground(new java.awt.Color(255, 255, 255));
-        workPanel.setOpaque(false);
+        menuPanel.setBackground(new java.awt.Color(71, 71, 71));
+        menuPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        menuPanel.setForeground(new java.awt.Color(255, 255, 255));
+        menuPanel.setMaximumSize(new java.awt.Dimension(1400, 130));
+        menuPanel.setMinimumSize(new java.awt.Dimension(1400, 130));
+        menuPanel.setPreferredSize(new java.awt.Dimension(1400, 130));
+        menuPanel.setRequestFocusEnabled(false);
+
+        headerPanel.setMaximumSize(new java.awt.Dimension(1400, 150));
+        headerPanel.setMinimumSize(new java.awt.Dimension(1400, 150));
+        headerPanel.setLayout(new java.awt.BorderLayout());
+
+        jLayeredPane2.setLayout(new java.awt.BorderLayout());
+
+        orbHolder.setBackground(new java.awt.Color(204, 0, 0));
+        orbHolder.setOpaque(false);
+
+        try {
+            BufferedImage img = null;
+            img = ImageIO.read(getClass().getResource("/images/health_100.png"));
+            orb = new ZoomPanel(img,"no control");
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        orb.setOpaque(false);
+        orb.setPreferredSize(new java.awt.Dimension(230, 120));
+
+        javax.swing.GroupLayout orbLayout = new javax.swing.GroupLayout(orb);
+        orb.setLayout(orbLayout);
+        orbLayout.setHorizontalGroup(
+            orbLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 230, Short.MAX_VALUE)
+        );
+        orbLayout.setVerticalGroup(
+            orbLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 131, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout orbHolderLayout = new javax.swing.GroupLayout(orbHolder);
+        orbHolder.setLayout(orbHolderLayout);
+        orbHolderLayout.setHorizontalGroup(
+            orbHolderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(orbHolderLayout.createSequentialGroup()
+                .addComponent(orb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1170, Short.MAX_VALUE))
+        );
+        orbHolderLayout.setVerticalGroup(
+            orbHolderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orbHolderLayout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(orb, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jLayeredPane2.setLayer(orbHolder, javax.swing.JLayeredPane.POPUP_LAYER);
+        jLayeredPane2.add(orbHolder, java.awt.BorderLayout.SOUTH);
+
+        headerHolder.setOpaque(false);
+        headerHolder.setLayout(new java.awt.BorderLayout());
+
+        try {
+            BufferedImage img = null;
+            img = ImageIO.read(getClass().getResource("/images/header2.png"));
+            header = new ZoomPanel(img,"no control");
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        header.setEnabled(false);
+        header.setFocusable(false);
+        header.setMinimumSize(new java.awt.Dimension(1400, 130));
+        header.setPreferredSize(new java.awt.Dimension(1400, 130));
+        header.setRequestFocusEnabled(false);
+        header.setVerifyInputWhenFocusTarget(false);
+
+        javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
+        header.setLayout(headerLayout);
+        headerLayout.setHorizontalGroup(
+            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        headerLayout.setVerticalGroup(
+            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        headerHolder.add(header, java.awt.BorderLayout.CENTER);
+
+        jLayeredPane2.add(headerHolder, java.awt.BorderLayout.PAGE_START);
+
+        headerPanel.add(jLayeredPane2, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
+        menuPanel.setLayout(menuPanelLayout);
+        menuPanelLayout.setHorizontalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        menuPanelLayout.setVerticalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        wrappingPanel.add(menuPanel, java.awt.BorderLayout.PAGE_START);
+
+        workHolder.setLayout(new java.awt.BorderLayout());
 
         scroll_Logs.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -550,16 +747,24 @@ public class DashboardFrame extends javax.swing.JFrame {
         //mc.redirectErr(Color.RED, null);
         //mc.setMessageLines(100);
 
+        workHolder.add(scroll_Logs, java.awt.BorderLayout.NORTH);
+        scroll_Logs.getAccessibleContext().setAccessibleName("");
+
+        workPanel.setBackground(new java.awt.Color(102, 102, 102));
+        workPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        workPanel.setForeground(new java.awt.Color(255, 255, 255));
+        workPanel.setOpaque(false);
+        workPanel.setLayout(new java.awt.BorderLayout());
+
         scroll_WorkArea.setBackground(new java.awt.Color(102, 102, 102));
         scroll_WorkArea.setMaximumSize(new java.awt.Dimension(32767, 400));
         scroll_WorkArea.setOpaque(false);
-        scroll_WorkArea.setPreferredSize(new java.awt.Dimension(450, 464));
+        scroll_WorkArea.setPreferredSize(new java.awt.Dimension(450, 500));
 
         splitPanel_WorkArea.setBackground(new java.awt.Color(102, 102, 102));
         splitPanel_WorkArea.setResizeWeight(0.5);
         splitPanel_WorkArea.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         splitPanel_WorkArea.setMinimumSize(new java.awt.Dimension(500, 500));
-        splitPanel_WorkArea.setOneTouchExpandable(true);
         splitPanel_WorkArea.setPreferredSize(new java.awt.Dimension(800, 500));
 
         leftSplit.setBackground(new java.awt.Color(102, 102, 102));
@@ -581,6 +786,8 @@ public class DashboardFrame extends javax.swing.JFrame {
         worldCard.setMinimumSize(new java.awt.Dimension(800, 500));
         worldCard.setLayout(new java.awt.GridLayout(1, 0));
 
+        jLayeredPane1.setLayout(new java.awt.BorderLayout());
+
         try {
             BufferedImage inventoryImg = ImageIO.read(getClass().getResource("/images/golein.png"));
             worldPanel = new ZoomPanel(inventoryImg);
@@ -590,7 +797,10 @@ public class DashboardFrame extends javax.swing.JFrame {
         worldPanel.setBackground(new java.awt.Color(0, 0, 0));
         worldPanel.setMaximumSize(new java.awt.Dimension(800, 500));
         worldPanel.setMinimumSize(new java.awt.Dimension(800, 500));
-        worldCard.add(worldPanel);
+        worldPanel.setLayout(new java.awt.BorderLayout());
+        jLayeredPane1.add(worldPanel, java.awt.BorderLayout.CENTER);
+
+        worldCard.add(jLayeredPane1);
 
         leftCards.add(worldCard, "world");
 
@@ -801,7 +1011,7 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         healthStatus.setLayout(new javax.swing.BoxLayout(healthStatus, javax.swing.BoxLayout.LINE_AXIS));
 
-        healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_100.png"))); // NOI18N
+        healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/give.png"))); // NOI18N
         healthIcon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         healthIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1172,6 +1382,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        leftWeaponPanel.setComponentPopupMenu(equipPop);
         leftWeaponPanel.setName("weapon outer"); // NOI18N
         leftWeaponPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         leftWeaponPanel.setLayout(new java.awt.BorderLayout());
@@ -1186,11 +1397,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         leftWeapon.setLayout(leftWeaponLayout);
         leftWeaponLayout.setHorizontalGroup(
             leftWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         leftWeaponLayout.setVerticalGroup(
             leftWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         leftWeaponPanel.add(leftWeapon, java.awt.BorderLayout.CENTER);
@@ -1208,6 +1419,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        neckPanel.setComponentPopupMenu(equipPop);
         neckPanel.setMinimumSize(new java.awt.Dimension(81, 74));
         neckPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1220,11 +1432,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         neckArmor.setLayout(neckArmorLayout);
         neckArmorLayout.setHorizontalGroup(
             neckArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 69, Short.MAX_VALUE)
+            .addGap(0, 81, Short.MAX_VALUE)
         );
         neckArmorLayout.setVerticalGroup(
             neckArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 62, Short.MAX_VALUE)
+            .addGap(0, 74, Short.MAX_VALUE)
         );
 
         neckPanel.add(neckArmor, java.awt.BorderLayout.CENTER);
@@ -1242,6 +1454,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        headPanel.setComponentPopupMenu(equipPop);
         headPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         headPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1254,11 +1467,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         headArmor.setLayout(headArmorLayout);
         headArmorLayout.setHorizontalGroup(
             headArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         headArmorLayout.setVerticalGroup(
             headArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         headPanel.add(headArmor, java.awt.BorderLayout.CENTER);
@@ -1276,6 +1489,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        handPanel.setComponentPopupMenu(equipPop);
         handPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         handPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1288,11 +1502,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         handArmor.setLayout(handArmorLayout);
         handArmorLayout.setHorizontalGroup(
             handArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         handArmorLayout.setVerticalGroup(
             handArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         handPanel.add(handArmor, java.awt.BorderLayout.CENTER);
@@ -1311,6 +1525,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        chestPanel.setComponentPopupMenu(equipPop);
         chestPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         chestPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1323,11 +1538,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         chestArmor.setLayout(chestArmorLayout);
         chestArmorLayout.setHorizontalGroup(
             chestArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         chestArmorLayout.setVerticalGroup(
             chestArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         chestPanel.add(chestArmor, java.awt.BorderLayout.CENTER);
@@ -1345,6 +1560,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        rightWeaponPanel.setComponentPopupMenu(equipPop);
         rightWeaponPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         rightWeaponPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1357,11 +1573,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         rightWeapon.setLayout(rightWeaponLayout);
         rightWeaponLayout.setHorizontalGroup(
             rightWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         rightWeaponLayout.setVerticalGroup(
             rightWeaponLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         rightWeaponPanel.add(rightWeapon, java.awt.BorderLayout.CENTER);
@@ -1380,6 +1596,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lowerPanel.setComponentPopupMenu(equipPop);
         lowerPanel.setPreferredSize(new java.awt.Dimension(81, 74));
         lowerPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1392,11 +1609,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         lowerArmor.setLayout(lowerArmorLayout);
         lowerArmorLayout.setHorizontalGroup(
             lowerArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         lowerArmorLayout.setVerticalGroup(
             lowerArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 74, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         lowerPanel.add(lowerArmor, java.awt.BorderLayout.CENTER);
@@ -1422,6 +1639,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        feetPanel.setComponentPopupMenu(equipPop);
         feetPanel.setLayout(new java.awt.BorderLayout());
 
         feetArmor = new ImagePanel();
@@ -1432,11 +1650,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         feetArmor.setLayout(feetArmorLayout);
         feetArmorLayout.setHorizontalGroup(
             feetArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 69, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         feetArmorLayout.setVerticalGroup(
             feetArmorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 62, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         feetPanel.add(feetArmor, java.awt.BorderLayout.CENTER);
@@ -1572,123 +1790,16 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         scroll_WorkArea.setViewportView(splitPanel_WorkArea);
 
-        javax.swing.GroupLayout workPanelLayout = new javax.swing.GroupLayout(workPanel);
-        workPanel.setLayout(workPanelLayout);
-        workPanelLayout.setHorizontalGroup(
-            workPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(workPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(workPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scroll_WorkArea, javax.swing.GroupLayout.DEFAULT_SIZE, 1146, Short.MAX_VALUE)
-                    .addComponent(scroll_Logs))
-                .addContainerGap())
-        );
-        workPanelLayout.setVerticalGroup(
-            workPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(workPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scroll_WorkArea, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
-                .addGap(10, 10, 10)
-                .addComponent(scroll_Logs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        workPanel.add(scroll_WorkArea, java.awt.BorderLayout.PAGE_START);
 
-        credits.setForeground(new java.awt.Color(255, 255, 255));
-        credits.setText("August Florese (Copyright 2021)");
+        workHolder.add(workPanel, java.awt.BorderLayout.CENTER);
 
-        menuPanel.setBackground(new java.awt.Color(71, 71, 71));
-        menuPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        menuPanel.setForeground(new java.awt.Color(255, 255, 255));
+        wrappingPanel.add(workHolder, java.awt.BorderLayout.CENTER);
 
-        cmb_AddEquip.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- Select Equipment --", "Armor", "Weapon", "Shield" }));
-        cmb_AddEquip.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        cmb_AddEquip.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_AddEquipActionPerformed(evt);
-            }
-        });
-
-        button_AddItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_normal.png"))); // NOI18N
-        button_AddItem.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        button_AddItem.setIconTextGap(0);
-        button_AddItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        button_AddItem.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
-        button_AddItem.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_highlight.png"))); // NOI18N
-        button_AddItem.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
-        button_AddItem.setOpaque(false);
-        button_AddItem.setContentAreaFilled(false);
-        button_AddItem.setBorderPainted(false);
-        button_AddItem.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_accept_pressed.png"))); // NOI18N
-        //try {
-            //    Image img = ImageIO.read(getClass().getResource("/images/btn_accept.png"));
-            //    //button_AddItem.setMargin(new Insets(0, 0, 0, 0));
-            //    button_AddItem.setIcon(new ImageIcon(img));
-            //  } catch (Exception ex) {
-            //    System.out.println(ex);
-            //}
-        button_AddItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_AddItemActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(button_AddItem)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_AddEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cmb_AddEquip)
-            .addComponent(button_AddItem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
-        menuPanel.setLayout(menuPanelLayout);
-        menuPanelLayout.setHorizontalGroup(
-            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        menuPanelLayout.setVerticalGroup(
-            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(menuPanelLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout wrappingPanelLayout = new javax.swing.GroupLayout(wrappingPanel);
-        wrappingPanel.setLayout(wrappingPanelLayout);
-        wrappingPanelLayout.setHorizontalGroup(
-            wrappingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(wrappingPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(wrappingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wrappingPanelLayout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(menuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(wrappingPanelLayout.createSequentialGroup()
-                        .addGroup(wrappingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(workPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(credits, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(1, 1, 1)))
-                .addGap(1, 1, 1))
-        );
-        wrappingPanelLayout.setVerticalGroup(
-            wrappingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(wrappingPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(menuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(workPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(1, 1, 1)
-                .addComponent(credits)
-                .addGap(1, 1, 1))
-        );
+        credit.setBackground(new java.awt.Color(0, 0, 0));
+        credit.setForeground(new java.awt.Color(255, 255, 204));
+        credit.setText("Developed by: August Florese");
+        wrappingPanel.add(credit, java.awt.BorderLayout.PAGE_END);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1698,21 +1809,16 @@ public class DashboardFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(wrappingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(wrappingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_AddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_AddItemActionPerformed
-        AddItem("AXE", ItemType.WEAPON, "/images/wpn-swd.png", 1, 1, 1);
+        //AddItem("AXE", ItemType.WEAPON, "/images/wpn-swd.png", 1, 1, 1);
+        hero.balanceStatus();
     }//GEN-LAST:event_button_AddItemActionPerformed
-
-    private void cmb_AddEquipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_AddEquipActionPerformed
-        if (cmb_AddEquip.getSelectedItem().toString() != "-- Select Equipment --") {
-            System.out.println(cmb_AddEquip.getSelectedItem().toString());
-        }
-    }//GEN-LAST:event_cmb_AddEquipActionPerformed
 
     private void inventoryToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventoryToggleActionPerformed
         CardLayout card = (CardLayout) leftCards.getLayout();
@@ -1839,7 +1945,6 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem buyContext;
     private javax.swing.JPanel chestArmor;
     private javax.swing.JPanel chestPanel;
-    private javax.swing.JComboBox<String> cmb_AddEquip;
     private javax.swing.JTextField coinField;
     private javax.swing.JPanel coinHolder;
     private javax.swing.JPanel coinHolder1;
@@ -1847,6 +1952,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JLabel coinIcon1;
     private javax.swing.JPanel coinStatus;
     private javax.swing.JPanel coinStatus1;
+    private javax.swing.JLabel credit;
     private javax.swing.JLabel credits;
     private javax.swing.JPanel detailsBackground;
     private javax.swing.JPanel detailsPanel;
@@ -1856,6 +1962,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JToggleButton emptyToggle2;
     private javax.swing.JToggleButton emptyToggle3;
     private javax.swing.JMenuItem equipContext;
+    private javax.swing.JPopupMenu equipPop;
     private javax.swing.JToggleButton equipToggle;
     private javax.swing.JPanel equipmentCard;
     private javax.swing.JPanel feetArmor;
@@ -1864,6 +1971,9 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel handPanel;
     private javax.swing.JPanel headArmor;
     private javax.swing.JPanel headPanel;
+    private javax.swing.JPanel header;
+    private javax.swing.JPanel headerHolder;
+    private javax.swing.JPanel headerPanel;
     private javax.swing.JTextField healthField;
     private javax.swing.JPanel healthHolder;
     private javax.swing.JLabel healthIcon;
@@ -1884,7 +1994,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JLayeredPane jLayeredPane2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAgi;
     private javax.swing.JLabel lblArmor;
@@ -1902,6 +2013,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel menuPanel;
     private javax.swing.JPanel neckArmor;
     private javax.swing.JPanel neckPanel;
+    private javax.swing.JPanel orb;
+    private javax.swing.JPanel orbHolder;
     private javax.swing.JPanel rightCards;
     private javax.swing.JPanel rightSplit;
     private javax.swing.JTabbedPane rightTab;
@@ -1923,6 +2036,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JSplitPane splitPanel_WorkArea;
     private javax.swing.JPanel statusCard;
     private javax.swing.JTextArea textarea_status;
+    private javax.swing.JMenuItem unequipContext;
+    private javax.swing.JPanel workHolder;
     private javax.swing.JPanel workPanel;
     private javax.swing.JPanel worldCard;
     private javax.swing.JPanel worldPanel;

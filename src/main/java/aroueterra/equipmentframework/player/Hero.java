@@ -111,6 +111,11 @@ public class Hero {
         };
     }
 
+    public void unequipItem(int index) {
+        equipment[index] = null;
+        System.out.println(getDamage());
+    }
+
     private boolean inventoryParity(int index, Item item) {
         if (equipment[index] != null) {
             previous = equipment[index];
@@ -193,8 +198,23 @@ public class Hero {
                     setArmor(getArmor() + item.getProperty(ARMOR));
                     updateLabels(PropertyType.ARMOR);
                 }
+            } else {
+                updateLabels();
             }
         }
+    }
+
+    public void updateLabels() {
+        var label = statusLabels.get(PropertyType.DAMAGE);
+        label.setText(Integer.toString(getDamage()));
+        label = statusLabels.get(PropertyType.ARMOR);
+        label.setText(Integer.toString(getArmor()));
+        label = statusLabels.get(PropertyType.STRENGTH);
+        label.setText(Integer.toString(getStrength()));
+        label = statusLabels.get(PropertyType.AGILITY);
+        label.setText(Integer.toString(getAgility()));
+        label = statusLabels.get(PropertyType.INTELLIGENCE);
+        label.setText(Integer.toString(getIntelligence()));
     }
 
     public void updateLabels(PropertyType type) {
