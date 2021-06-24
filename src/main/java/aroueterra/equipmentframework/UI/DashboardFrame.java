@@ -17,14 +17,18 @@ import aroueterra.EquipmentFramework.player.Shop;
 import aroueterra.EquipmentFramework.UI.custom.ShopInventory;
 import aroueterra.EquipmentFramework.UI.inventory.ItemType;
 import aroueterra.EquipmentFramework.UI.inventory.PropertyType;
+import aroueterra.EquipmentFramework.player.SaveManager;
 import aroueterra.EquipmentFramework.utility.Compendium;
+import aroueterra.EquipmentFramework.utility.JukeBox;
+import aroueterra.EquipmentFramework.utility.Song;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
-
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -45,6 +49,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
@@ -62,6 +68,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     Hero hero;
     Shop shop;
     Compendium[] compendium;
+    JukeBox jukeBox;
     static boolean toggled = false;
 
     public DashboardFrame(Hero hero, Compendium[] compendium) {
@@ -77,6 +84,7 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         this.hero = hero;
         this.compendium = compendium;
+        jukeBox = new JukeBox();
         initComponents();
 
         heroInit();
@@ -93,21 +101,24 @@ public class DashboardFrame extends javax.swing.JFrame {
         }
         CreateCells(slot_bg, inventoryCard, hero, 5);
         CreateCells(shopslot_bg, shopPanel, shop, 5);
+        hero.inventory.repaintCells();
+        hero.repaintEquips();
         setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
     }
 
     private void heroInit() {
         registerComponents();
         hero.balanceStatus();
-        hero.getStatus();
+        //hero.getStatus();
         lblName.setText(hero.getName());
         updateLabelMessage();
         updateHealth(hero.getHealth());
         coinField.setText(Integer.toString(hero.getGold()));
+        hero.setFrame(this);
     }
 
     //Create hero slots
-    public void CreateCells(BufferedImage img, JPanel parent, Hero hero, int count) {
+    private void CreateCells(BufferedImage img, JPanel parent, Hero hero, int count) {
         GridBagConstraints gbc = new GridBagConstraints();
         for (int row = 0; row < count; row++) {
             for (int col = 0; col < count; col++) {
@@ -144,7 +155,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     }
 
     //Create shop slots
-    public void CreateCells(BufferedImage img, JPanel parent, Shop shop, int count) {
+    private void CreateCells(BufferedImage img, JPanel parent, Shop shop, int count) {
         GridBagConstraints gbc = new GridBagConstraints();
         for (int row = 0; row < count; row++) {
             for (int col = 0; col < count; col++) {
@@ -177,9 +188,10 @@ public class DashboardFrame extends javax.swing.JFrame {
         shop.inventory.createInnerCell(shopPop, list, shop);
     }
 
-    private void updateHealth(int health) {
+    public void updateHealth(int health) {
         healthField.setText(Integer.toString(health));
-        if (health > 76) {
+        ((ZoomPanel) orb).setToolTipText(Integer.toString(health) + "/100");
+        if (health > 90) {
             healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_100.png")));
             ((ZoomPanel) orb).setImage("/images/health_100.png");
         } else if (health > 51) {
@@ -297,7 +309,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         //UIManager.put("InternalFrame.titleFont", myFont);
     }
 
-    public void AddItem(Item item, Inventory inventory, Map<String, Integer> coordinates) {
+    private void AddItem(Item item, Inventory inventory, Map<String, Integer> coordinates) {
         if (coordinates != null) {
             inventory.store(item, coordinates.get("row"), coordinates.get("column"), item.getAsset());
         } else {
@@ -305,7 +317,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         }
     }
 
-    public void AddItem(String itemName, ItemType itemType, String resource, int property1, int property2, int property3) {
+    private void AddItem(String itemName, ItemType itemType, String resource, int property1, int property2, int property3) {
         BufferedImage item = null;
         try {
             item = ImageIO.read(getClass().getResource(resource));
@@ -345,6 +357,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         equipPop = new javax.swing.JPopupMenu();
         button_AddItem = new javax.swing.JButton();
         credits = new javax.swing.JLabel();
+        emptyToggle1 = new javax.swing.JToggleButton();
         wrappingPanel = new javax.swing.JPanel();
         menuPanel = new javax.swing.JPanel();
         headerPanel = new javax.swing.JPanel();
@@ -366,15 +379,17 @@ public class DashboardFrame extends javax.swing.JFrame {
         worldPanel = new javax.swing.JPanel();
         inventoryCard = new javax.swing.JPanel();
         lblLeftSplit = new javax.swing.JLabel();
+        mapCard = new javax.swing.JPanel();
+        mapPanel = new javax.swing.JPanel();
         hotBar = new javax.swing.JPanel();
         spacer = new javax.swing.JLabel();
         inventoryToggle = new javax.swing.JToggleButton();
+        btnMap = new javax.swing.JButton();
         equipToggle = new javax.swing.JToggleButton();
         shopToggle = new javax.swing.JToggleButton();
-        emptyToggle = new javax.swing.JToggleButton();
-        emptyToggle1 = new javax.swing.JToggleButton();
-        emptyToggle2 = new javax.swing.JToggleButton();
-        emptyToggle3 = new javax.swing.JToggleButton();
+        btnSave = new javax.swing.JButton();
+        btnHeal = new javax.swing.JButton();
+        btnPoison = new javax.swing.JButton();
         coinStatus = new javax.swing.JPanel();
         coinIcon = new javax.swing.JLabel();
         coinHolder = new javax.swing.JPanel();
@@ -458,8 +473,8 @@ public class DashboardFrame extends javax.swing.JFrame {
         discardContext.setText("Discard");
 
         equipContext.setForeground(new java.awt.Color(255, 255, 255));
-        equipContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/equip.png"))); // NOI18N
-        equipContext.setText("Equip");
+        equipContext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/take.png"))); // NOI18N
+        equipContext.setText("Use");
 
         JPanel pan = new JPanel();
         rightTab.addTab("2", pan);
@@ -598,6 +613,24 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         credits.setForeground(new java.awt.Color(255, 255, 255));
         credits.setText("August Florese (Copyright 2021)");
+
+        emptyToggle1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
+        emptyToggle1.setEnabled(false);
+        emptyToggle1.setFocusPainted(false);
+        emptyToggle1.setFocusable(false);
+        emptyToggle1.setIconTextGap(0);
+        emptyToggle1.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        emptyToggle1.setMaximumSize(new java.awt.Dimension(35, 35));
+        emptyToggle1.setMinimumSize(new java.awt.Dimension(35, 35));
+        emptyToggle1.setPreferredSize(new java.awt.Dimension(35, 35));
+        emptyToggle1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
+        emptyToggle1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
+        emptyToggle1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
+        emptyToggle1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emptyToggle1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Equipment Framework");
@@ -822,6 +855,24 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         leftCards.add(inventoryCard, "inventory");
 
+        mapCard.setBackground(new java.awt.Color(0, 0, 0));
+        mapCard.setMaximumSize(new java.awt.Dimension(800, 500));
+        mapCard.setLayout(new java.awt.BorderLayout());
+
+        try {
+            BufferedImage mapImg = ImageIO.read(getClass().getResource("/images/map.png"));
+            mapPanel = new ZoomPanel(mapImg);
+        } catch (IOException ex) {
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        mapPanel.setBackground(new java.awt.Color(0, 0, 0));
+        mapPanel.setMaximumSize(new java.awt.Dimension(800, 500));
+        mapPanel.setMinimumSize(new java.awt.Dimension(800, 500));
+        mapPanel.setLayout(new java.awt.BorderLayout());
+        mapCard.add(mapPanel, java.awt.BorderLayout.CENTER);
+
+        leftCards.add(mapCard, "map");
+
         leftSplit.add(leftCards, java.awt.BorderLayout.CENTER);
 
         hotBar.setAlignmentX(0.0F);
@@ -833,6 +884,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         hotBar.add(spacer);
 
         inventoryToggle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_inv_normal_closed.png"))); // NOI18N
+        inventoryToggle.setToolTipText("Inventory");
         inventoryToggle.setFocusPainted(false);
         inventoryToggle.setFocusable(false);
         inventoryToggle.setIconTextGap(0);
@@ -850,7 +902,24 @@ public class DashboardFrame extends javax.swing.JFrame {
         });
         hotBar.add(inventoryToggle);
 
+        btnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_map_normal.png"))); // NOI18N
+        btnMap.setToolTipText("World Map");
+        btnMap.setFocusPainted(false);
+        btnMap.setFocusable(false);
+        btnMap.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnMap.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnMap.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnMap.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_map_highlight.png"))); // NOI18N
+        btnMap.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_map_pressed.png"))); // NOI18N
+        btnMap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapActionPerformed(evt);
+            }
+        });
+        hotBar.add(btnMap);
+
         equipToggle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_equip_normal_closed.png"))); // NOI18N
+        equipToggle.setToolTipText("Equipment");
         equipToggle.setFocusPainted(false);
         equipToggle.setFocusable(false);
         equipToggle.setIconTextGap(0);
@@ -869,6 +938,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         hotBar.add(equipToggle);
 
         shopToggle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_normal_closed.png"))); // NOI18N
+        shopToggle.setToolTipText("Shop");
         shopToggle.setFocusPainted(false);
         shopToggle.setFocusable(false);
         shopToggle.setIconTextGap(0);
@@ -877,8 +947,8 @@ public class DashboardFrame extends javax.swing.JFrame {
         shopToggle.setMinimumSize(new java.awt.Dimension(35, 35));
         shopToggle.setPreferredSize(new java.awt.Dimension(35, 35));
         shopToggle.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_highlight_closed.png"))); // NOI18N
-        shopToggle.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_pressed_open.png"))); // NOI18N
-        shopToggle.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_normal_open.png"))); // NOI18N
+        shopToggle.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_highlight_open2.png"))); // NOI18N
+        shopToggle.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_shop_normal_open2.png"))); // NOI18N
         shopToggle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 shopToggleActionPerformed(evt);
@@ -886,85 +956,54 @@ public class DashboardFrame extends javax.swing.JFrame {
         });
         hotBar.add(shopToggle);
 
-        emptyToggle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle.setEnabled(false);
-        emptyToggle.setFocusPainted(false);
-        emptyToggle.setFocusable(false);
-        emptyToggle.setIconTextGap(0);
-        emptyToggle.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        emptyToggle.setMaximumSize(new java.awt.Dimension(35, 35));
-        emptyToggle.setMinimumSize(new java.awt.Dimension(35, 35));
-        emptyToggle.setPreferredSize(new java.awt.Dimension(35, 35));
-        emptyToggle.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_save_normal.png"))); // NOI18N
+        btnSave.setToolTipText("Save Game");
+        btnSave.setFocusPainted(false);
+        btnSave.setFocusable(false);
+        btnSave.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnSave.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnSave.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnSave.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_save_highlight.png"))); // NOI18N
+        btnSave.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_save_pressed.png"))); // NOI18N
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emptyToggleActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
-        hotBar.add(emptyToggle);
+        hotBar.add(btnSave);
 
-        emptyToggle1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle1.setEnabled(false);
-        emptyToggle1.setFocusPainted(false);
-        emptyToggle1.setFocusable(false);
-        emptyToggle1.setIconTextGap(0);
-        emptyToggle1.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        emptyToggle1.setMaximumSize(new java.awt.Dimension(35, 35));
-        emptyToggle1.setMinimumSize(new java.awt.Dimension(35, 35));
-        emptyToggle1.setPreferredSize(new java.awt.Dimension(35, 35));
-        emptyToggle1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle1.addActionListener(new java.awt.event.ActionListener() {
+        btnHeal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_heal_normal.png"))); // NOI18N
+        btnHeal.setToolTipText("Rejuvenate: +10 HP");
+        btnHeal.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnHeal.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnHeal.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnHeal.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_heal_highlight.png"))); // NOI18N
+        btnHeal.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_heal_pressed.png"))); // NOI18N
+        btnHeal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emptyToggle1ActionPerformed(evt);
+                btnHealActionPerformed(evt);
             }
         });
-        hotBar.add(emptyToggle1);
+        hotBar.add(btnHeal);
 
-        emptyToggle2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle2.setEnabled(false);
-        emptyToggle2.setFocusPainted(false);
-        emptyToggle2.setFocusable(false);
-        emptyToggle2.setIconTextGap(0);
-        emptyToggle2.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        emptyToggle2.setMaximumSize(new java.awt.Dimension(35, 35));
-        emptyToggle2.setMinimumSize(new java.awt.Dimension(35, 35));
-        emptyToggle2.setPreferredSize(new java.awt.Dimension(35, 35));
-        emptyToggle2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle2.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle2.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle2.addActionListener(new java.awt.event.ActionListener() {
+        btnPoison.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_poison_normal.png"))); // NOI18N
+        btnPoison.setToolTipText("Poison Nova: -10HP");
+        btnPoison.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnPoison.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnPoison.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnPoison.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_poison_highlight.png"))); // NOI18N
+        btnPoison.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_poison_pressed.png"))); // NOI18N
+        btnPoison.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emptyToggle2ActionPerformed(evt);
+                btnPoisonActionPerformed(evt);
             }
         });
-        hotBar.add(emptyToggle2);
-
-        emptyToggle3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle3.setEnabled(false);
-        emptyToggle3.setFocusPainted(false);
-        emptyToggle3.setFocusable(false);
-        emptyToggle3.setIconTextGap(0);
-        emptyToggle3.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        emptyToggle3.setMaximumSize(new java.awt.Dimension(35, 35));
-        emptyToggle3.setMinimumSize(new java.awt.Dimension(35, 35));
-        emptyToggle3.setPreferredSize(new java.awt.Dimension(35, 35));
-        emptyToggle3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle3.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cell_empty.png"))); // NOI18N
-        emptyToggle3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emptyToggle3ActionPerformed(evt);
-            }
-        });
-        hotBar.add(emptyToggle3);
+        hotBar.add(btnPoison);
 
         coinStatus.setLayout(new javax.swing.BoxLayout(coinStatus, javax.swing.BoxLayout.LINE_AXIS));
 
         coinIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/coin.png"))); // NOI18N
+        coinIcon.setToolTipText("Gold in Bag");
         coinIcon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         coinIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -980,6 +1019,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         coinField.setForeground(new java.awt.Color(255, 255, 204));
         coinField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         coinField.setText("9999");
+        coinField.setToolTipText("Gold in Bag");
         coinField.setFocusable(false);
         coinField.setRequestFocusEnabled(false);
 
@@ -1011,7 +1051,8 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         healthStatus.setLayout(new javax.swing.BoxLayout(healthStatus, javax.swing.BoxLayout.LINE_AXIS));
 
-        healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/give.png"))); // NOI18N
+        healthIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/health_small_100.png"))); // NOI18N
+        healthIcon.setToolTipText("Total Health");
         healthIcon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         healthIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1027,6 +1068,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         healthField.setForeground(new java.awt.Color(255, 0, 0));
         healthField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         healthField.setText("100");
+        healthField.setToolTipText("Total Health");
         healthField.setFocusable(false);
         healthField.setRequestFocusEnabled(false);
 
@@ -1484,7 +1526,7 @@ public class DashboardFrame extends javax.swing.JFrame {
 
         try {
             BufferedImage eq_img = null;
-            eq_img = ImageIO.read(getClass().getResource("/images/slot_feet.png"));
+            eq_img = ImageIO.read(getClass().getResource("/images/slot_hand.png"));
             handPanel = new CellPane(eq_img, hero, ItemType.HANDS);
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -1717,6 +1759,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         shopBar.add(spacer2);
 
         btnRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_refresh_normal.png"))); // NOI18N
+        btnRefresh.setToolTipText("Refresh shop items");
         btnRefresh.setFocusPainted(false);
         btnRefresh.setFocusable(false);
         btnRefresh.setIconTextGap(0);
@@ -1737,6 +1780,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         coinStatus1.setLayout(new javax.swing.BoxLayout(coinStatus1, javax.swing.BoxLayout.LINE_AXIS));
 
         coinIcon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/coin.png"))); // NOI18N
+        coinIcon1.setToolTipText("Shop Earnings");
         coinIcon1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         coinStatus1.add(coinIcon1);
 
@@ -1747,6 +1791,7 @@ public class DashboardFrame extends javax.swing.JFrame {
         shopCoinField.setForeground(new java.awt.Color(255, 255, 204));
         shopCoinField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         shopCoinField.setText("0");
+        shopCoinField.setToolTipText("Shop earnings");
         shopCoinField.setFocusable(false);
         shopCoinField.setRequestFocusEnabled(false);
 
@@ -1821,13 +1866,16 @@ public class DashboardFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_button_AddItemActionPerformed
 
     private void inventoryToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventoryToggleActionPerformed
+
         CardLayout card = (CardLayout) leftCards.getLayout();
         if (!inventoryToggle.isSelected()) {
+            jukeBox.Play(Song.INVENTORY_CLOSE);
             card.show(leftCards, "world");
             worldCard.revalidate();
             worldCard.repaint();
 
         } else {
+            jukeBox.Play(Song.INVENTORY);
             card.show(leftCards, "inventory");
             inventoryCard.revalidate();
             inventoryCard.repaint();
@@ -1837,16 +1885,19 @@ public class DashboardFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_inventoryToggleActionPerformed
 
     private void equipToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_equipToggleActionPerformed
+
         CardLayout card = (CardLayout) rightCards.getLayout();
         if (shopToggle.isSelected()) {
             shopToggle.setSelected(false);
         }
         if (!equipToggle.isSelected()) {
+            jukeBox.Play(Song.PAPER_CLOSE);
             card.show(rightCards, "status");
             statusCard.revalidate();
             statusCard.repaint();
 
         } else {
+            jukeBox.Play(Song.PAPER);
             card.show(rightCards, "equipment");
             equipmentCard.revalidate();
             equipmentCard.repaint();
@@ -1855,42 +1906,28 @@ public class DashboardFrame extends javax.swing.JFrame {
         splitPanel_WorkArea.repaint();
     }//GEN-LAST:event_equipToggleActionPerformed
 
-    private void emptyToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyToggleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emptyToggleActionPerformed
-
-    private void emptyToggle1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyToggle1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emptyToggle1ActionPerformed
-
-    private void emptyToggle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyToggle2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emptyToggle2ActionPerformed
-
-    private void emptyToggle3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyToggle3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emptyToggle3ActionPerformed
-
     private void shopToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shopToggleActionPerformed
+
         CardLayout card = (CardLayout) rightCards.getLayout();
         if (equipToggle.isSelected()) {
             equipToggle.setSelected(false);
         }
         if (!shopToggle.isSelected()) {
+            jukeBox.Play(Song.SHOP_CLOSE);
             card.show(rightCards, "status");
             statusCard.revalidate();
             statusCard.repaint();
 
         } else {
+            jukeBox.Play(Song.SHOP);
             card.show(rightCards, "shop");
             shopPanel.revalidate();
             shopPanel.repaint();
         }
-//        splitPanel_WorkArea.revalidate();
-//        splitPanel_WorkArea.repaint();
     }//GEN-LAST:event_shopToggleActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        jukeBox.Play(Song.REFRESH);
         randomizeShop(compendium, 16, 0);
     }//GEN-LAST:event_btnRefreshActionPerformed
 
@@ -1914,20 +1951,77 @@ public class DashboardFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_healthIconMouseClicked
 
     private void btnAddStrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStrActionPerformed
+        jukeBox.Play(Song.SELECT);
         hero.setStrength(hero.getStrength() + 1);
         updateLabelMessage();
-
     }//GEN-LAST:event_btnAddStrActionPerformed
 
     private void btnAddAgiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAgiActionPerformed
+        jukeBox.Play(Song.SELECT);
         hero.setAgility(hero.getAgility() + 1);
         updateLabelMessage();
     }//GEN-LAST:event_btnAddAgiActionPerformed
 
     private void btnAddIntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddIntActionPerformed
+        jukeBox.Play(Song.SELECT);
         hero.setIntelligence(hero.getIntelligence() + 1);
         updateLabelMessage();
     }//GEN-LAST:event_btnAddIntActionPerformed
+
+    private void btnHealActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHealActionPerformed
+        jukeBox.Play(Song.HEAL);
+        hero.setHealth(hero.getHealth() + 10);
+        updateHealth(hero.getHealth());
+    }//GEN-LAST:event_btnHealActionPerformed
+    private boolean mapIsVisible;
+    private void btnMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapActionPerformed
+        CardLayout card = (CardLayout) leftCards.getLayout();
+        if (inventoryToggle.isSelected()) {
+            inventoryToggle.setSelected(false);
+        }
+        if (mapIsVisible) {
+            card.show(leftCards, "world");
+            worldCard.revalidate();
+            worldCard.repaint();
+            mapIsVisible = false;
+        } else {
+            jukeBox.Play(Song.PAPER);
+            card.show(leftCards, "map");
+            mapCard.revalidate();
+            mapCard.repaint();
+            mapIsVisible = true;
+        }
+
+    }//GEN-LAST:event_btnMapActionPerformed
+
+    private void btnPoisonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPoisonActionPerformed
+        jukeBox.Play(Song.SKILL);
+        hero.setHealth(hero.getHealth() - 10);
+        updateHealth(hero.getHealth());
+    }//GEN-LAST:event_btnPoisonActionPerformed
+
+    private void emptyToggle1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyToggle1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emptyToggle1ActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //var save = hero;
+        SaveManager saver = new SaveManager(
+                hero.getName(),
+                hero.getHealth(),
+                hero.getGold(),
+                hero.getInventory(),
+                hero.getAgility(),
+                hero.getStrength(),
+                hero.getIntelligence(),
+                hero.getEquipment()
+        );
+        String saveString = gson.toJson(saver);
+        saver.saveDialog(saveString);
+        System.out.println(saveString);
+    }//GEN-LAST:event_btnSaveActionPerformed
 
 //    public static void main(String args[]) {
 //
@@ -1940,7 +2034,11 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnAddAgi;
     private javax.swing.JButton btnAddInt;
     private javax.swing.JButton btnAddStr;
+    private javax.swing.JButton btnHeal;
+    private javax.swing.JButton btnMap;
+    private javax.swing.JButton btnPoison;
     private javax.swing.JToggleButton btnRefresh;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton button_AddItem;
     private javax.swing.JMenuItem buyContext;
     private javax.swing.JPanel chestArmor;
@@ -1957,10 +2055,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel detailsBackground;
     private javax.swing.JPanel detailsPanel;
     private javax.swing.JMenuItem discardContext;
-    private javax.swing.JToggleButton emptyToggle;
     private javax.swing.JToggleButton emptyToggle1;
-    private javax.swing.JToggleButton emptyToggle2;
-    private javax.swing.JToggleButton emptyToggle3;
     private javax.swing.JMenuItem equipContext;
     private javax.swing.JPopupMenu equipPop;
     private javax.swing.JToggleButton equipToggle;
@@ -2010,6 +2105,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel leftWeaponPanel;
     private javax.swing.JPanel lowerArmor;
     private javax.swing.JPanel lowerPanel;
+    private javax.swing.JPanel mapCard;
+    private javax.swing.JPanel mapPanel;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JPanel neckArmor;
     private javax.swing.JPanel neckPanel;

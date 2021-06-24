@@ -39,9 +39,9 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/images/equip.png"/>
+          <Image iconType="3" name="/images/take.png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Equip"/>
+        <Property name="text" type="java.lang.String" value="Use"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JTabbedPane" name="rightTab">
@@ -176,6 +176,41 @@
         </Property>
         <Property name="text" type="java.lang.String" value="August Florese (Copyright 2021)"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JToggleButton" name="emptyToggle1">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/images/cell_empty.png"/>
+        </Property>
+        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="focusPainted" type="boolean" value="false"/>
+        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="iconTextGap" type="int" value="0"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[35, 35]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[35, 35]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[35, 35]"/>
+        </Property>
+        <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/images/cell_empty.png"/>
+        </Property>
+        <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/images/cell_empty.png"/>
+        </Property>
+        <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/images/cell_empty.png"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emptyToggle1ActionPerformed"/>
+      </Events>
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -658,6 +693,48 @@
                                     </Component>
                                   </SubComponents>
                                 </Container>
+                                <Container class="javax.swing.JPanel" name="mapCard">
+                                  <Properties>
+                                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="0" green="0" red="0" type="rgb"/>
+                                    </Property>
+                                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[800, 500]"/>
+                                    </Property>
+                                  </Properties>
+                                  <Constraints>
+                                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                                      <CardConstraints cardName="map"/>
+                                    </Constraint>
+                                  </Constraints>
+
+                                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                                  <SubComponents>
+                                    <Container class="javax.swing.JPanel" name="mapPanel">
+                                      <Properties>
+                                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                          <Color blue="0" green="0" red="0" type="rgb"/>
+                                        </Property>
+                                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[800, 500]"/>
+                                        </Property>
+                                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[800, 500]"/>
+                                        </Property>
+                                      </Properties>
+                                      <AuxValues>
+                                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    BufferedImage mapImg = ImageIO.read(getClass().getResource(&quot;/images/map.png&quot;));&#xa;    mapPanel = new ZoomPanel(mapImg);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}"/>
+                                      </AuxValues>
+                                      <Constraints>
+                                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                                          <BorderConstraints direction="Center"/>
+                                        </Constraint>
+                                      </Constraints>
+
+                                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                                    </Container>
+                                  </SubComponents>
+                                </Container>
                               </SubComponents>
                             </Container>
                             <Container class="javax.swing.JPanel" name="hotBar">
@@ -692,6 +769,7 @@
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/images/btn_inv_normal_closed.png"/>
                                     </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Inventory"/>
                                     <Property name="focusPainted" type="boolean" value="false"/>
                                     <Property name="focusable" type="boolean" value="false"/>
                                     <Property name="iconTextGap" type="int" value="0"/>
@@ -721,11 +799,40 @@
                                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="inventoryToggleActionPerformed"/>
                                   </Events>
                                 </Component>
+                                <Component class="javax.swing.JButton" name="btnMap">
+                                  <Properties>
+                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/images/btn_map_normal.png"/>
+                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="World Map"/>
+                                    <Property name="focusPainted" type="boolean" value="false"/>
+                                    <Property name="focusable" type="boolean" value="false"/>
+                                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[35, 35]"/>
+                                    </Property>
+                                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[35, 35]"/>
+                                    </Property>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[35, 35]"/>
+                                    </Property>
+                                    <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/images/btn_map_highlight.png"/>
+                                    </Property>
+                                    <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/images/btn_map_pressed.png"/>
+                                    </Property>
+                                  </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMapActionPerformed"/>
+                                  </Events>
+                                </Component>
                                 <Component class="javax.swing.JToggleButton" name="equipToggle">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/images/btn_equip_normal_closed.png"/>
                                     </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Equipment"/>
                                     <Property name="focusPainted" type="boolean" value="false"/>
                                     <Property name="focusable" type="boolean" value="false"/>
                                     <Property name="iconTextGap" type="int" value="0"/>
@@ -760,6 +867,7 @@
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/images/btn_shop_normal_closed.png"/>
                                     </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Shop"/>
                                     <Property name="focusPainted" type="boolean" value="false"/>
                                     <Property name="focusable" type="boolean" value="false"/>
                                     <Property name="iconTextGap" type="int" value="0"/>
@@ -779,28 +887,24 @@
                                       <Image iconType="3" name="/images/btn_shop_highlight_closed.png"/>
                                     </Property>
                                     <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/btn_shop_pressed_open.png"/>
+                                      <Image iconType="3" name="/images/btn_shop_highlight_open2.png"/>
                                     </Property>
                                     <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/btn_shop_normal_open.png"/>
+                                      <Image iconType="3" name="/images/btn_shop_normal_open2.png"/>
                                     </Property>
                                   </Properties>
                                   <Events>
                                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="shopToggleActionPerformed"/>
                                   </Events>
                                 </Component>
-                                <Component class="javax.swing.JToggleButton" name="emptyToggle">
+                                <Component class="javax.swing.JButton" name="btnSave">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_save_normal.png"/>
                                     </Property>
-                                    <Property name="enabled" type="boolean" value="false"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Save Game"/>
                                     <Property name="focusPainted" type="boolean" value="false"/>
                                     <Property name="focusable" type="boolean" value="false"/>
-                                    <Property name="iconTextGap" type="int" value="0"/>
-                                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                                      <Insets value="[2, 2, 2, 2]"/>
-                                    </Property>
                                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[35, 35]"/>
                                     </Property>
@@ -811,31 +915,22 @@
                                       <Dimension value="[35, 35]"/>
                                     </Property>
                                     <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_save_highlight.png"/>
                                     </Property>
                                     <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_save_pressed.png"/>
                                     </Property>
                                   </Properties>
                                   <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emptyToggleActionPerformed"/>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveActionPerformed"/>
                                   </Events>
                                 </Component>
-                                <Component class="javax.swing.JToggleButton" name="emptyToggle1">
+                                <Component class="javax.swing.JButton" name="btnHeal">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_heal_normal.png"/>
                                     </Property>
-                                    <Property name="enabled" type="boolean" value="false"/>
-                                    <Property name="focusPainted" type="boolean" value="false"/>
-                                    <Property name="focusable" type="boolean" value="false"/>
-                                    <Property name="iconTextGap" type="int" value="0"/>
-                                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                                      <Insets value="[2, 2, 2, 2]"/>
-                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Rejuvenate: +10 HP"/>
                                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[35, 35]"/>
                                     </Property>
@@ -846,31 +941,22 @@
                                       <Dimension value="[35, 35]"/>
                                     </Property>
                                     <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_heal_highlight.png"/>
                                     </Property>
                                     <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_heal_pressed.png"/>
                                     </Property>
                                   </Properties>
                                   <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emptyToggle1ActionPerformed"/>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHealActionPerformed"/>
                                   </Events>
                                 </Component>
-                                <Component class="javax.swing.JToggleButton" name="emptyToggle2">
+                                <Component class="javax.swing.JButton" name="btnPoison">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_poison_normal.png"/>
                                     </Property>
-                                    <Property name="enabled" type="boolean" value="false"/>
-                                    <Property name="focusPainted" type="boolean" value="false"/>
-                                    <Property name="focusable" type="boolean" value="false"/>
-                                    <Property name="iconTextGap" type="int" value="0"/>
-                                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                                      <Insets value="[2, 2, 2, 2]"/>
-                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Poison Nova: -10HP"/>
                                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[35, 35]"/>
                                     </Property>
@@ -881,52 +967,14 @@
                                       <Dimension value="[35, 35]"/>
                                     </Property>
                                     <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_poison_highlight.png"/>
                                     </Property>
                                     <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
+                                      <Image iconType="3" name="/images/btn_poison_pressed.png"/>
                                     </Property>
                                   </Properties>
                                   <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emptyToggle2ActionPerformed"/>
-                                  </Events>
-                                </Component>
-                                <Component class="javax.swing.JToggleButton" name="emptyToggle3">
-                                  <Properties>
-                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="enabled" type="boolean" value="false"/>
-                                    <Property name="focusPainted" type="boolean" value="false"/>
-                                    <Property name="focusable" type="boolean" value="false"/>
-                                    <Property name="iconTextGap" type="int" value="0"/>
-                                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                                      <Insets value="[2, 2, 2, 2]"/>
-                                    </Property>
-                                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[35, 35]"/>
-                                    </Property>
-                                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[35, 35]"/>
-                                    </Property>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[35, 35]"/>
-                                    </Property>
-                                    <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                    <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/images/cell_empty.png"/>
-                                    </Property>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emptyToggle3ActionPerformed"/>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPoisonActionPerformed"/>
                                   </Events>
                                 </Component>
                                 <Container class="javax.swing.JPanel" name="coinStatus">
@@ -941,6 +989,7 @@
                                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                           <Image iconType="3" name="/images/coin.png"/>
                                         </Property>
+                                        <Property name="toolTipText" type="java.lang.String" value="Gold in Bag"/>
                                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                                             <LineBorder/>
@@ -998,6 +1047,7 @@
                                             </Property>
                                             <Property name="horizontalAlignment" type="int" value="4"/>
                                             <Property name="text" type="java.lang.String" value="9999"/>
+                                            <Property name="toolTipText" type="java.lang.String" value="Gold in Bag"/>
                                             <Property name="focusable" type="boolean" value="false"/>
                                             <Property name="requestFocusEnabled" type="boolean" value="false"/>
                                           </Properties>
@@ -1016,8 +1066,9 @@
                                     <Component class="javax.swing.JLabel" name="healthIcon">
                                       <Properties>
                                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                          <Image iconType="3" name="/images/give.png"/>
+                                          <Image iconType="3" name="/images/health_small_100.png"/>
                                         </Property>
+                                        <Property name="toolTipText" type="java.lang.String" value="Total Health"/>
                                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                                             <LineBorder/>
@@ -1075,6 +1126,7 @@
                                             </Property>
                                             <Property name="horizontalAlignment" type="int" value="4"/>
                                             <Property name="text" type="java.lang.String" value="100"/>
+                                            <Property name="toolTipText" type="java.lang.String" value="Total Health"/>
                                             <Property name="focusable" type="boolean" value="false"/>
                                             <Property name="requestFocusEnabled" type="boolean" value="false"/>
                                           </Properties>
@@ -1771,7 +1823,7 @@
                                         </Property>
                                       </Properties>
                                       <AuxValues>
-                                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    BufferedImage eq_img = null;&#xa;    eq_img = ImageIO.read(getClass().getResource(&quot;/images/slot_feet.png&quot;));&#xa;    handPanel = new CellPane(eq_img, hero, ItemType.HANDS);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}"/>
+                                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    BufferedImage eq_img = null;&#xa;    eq_img = ImageIO.read(getClass().getResource(&quot;/images/slot_hand.png&quot;));&#xa;    handPanel = new CellPane(eq_img, hero, ItemType.HANDS);&#xa;} catch (IOException ex) {&#xa;    Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);&#xa;}"/>
                                       </AuxValues>
                                       <Constraints>
                                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -2151,6 +2203,7 @@
                                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                               <Image iconType="3" name="/images/btn_refresh_normal.png"/>
                                             </Property>
+                                            <Property name="toolTipText" type="java.lang.String" value="Refresh shop items"/>
                                             <Property name="focusPainted" type="boolean" value="false"/>
                                             <Property name="focusable" type="boolean" value="false"/>
                                             <Property name="iconTextGap" type="int" value="0"/>
@@ -2192,6 +2245,7 @@
                                                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                                   <Image iconType="3" name="/images/coin.png"/>
                                                 </Property>
+                                                <Property name="toolTipText" type="java.lang.String" value="Shop Earnings"/>
                                                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                                                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                                                     <LineBorder/>
@@ -2246,6 +2300,7 @@
                                                     </Property>
                                                     <Property name="horizontalAlignment" type="int" value="4"/>
                                                     <Property name="text" type="java.lang.String" value="0"/>
+                                                    <Property name="toolTipText" type="java.lang.String" value="Shop earnings"/>
                                                     <Property name="focusable" type="boolean" value="false"/>
                                                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
                                                   </Properties>

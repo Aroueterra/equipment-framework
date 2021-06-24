@@ -416,6 +416,9 @@
                       <Image iconType="3" name="/images/btn_loadgame_normal.png"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadGameActionPerformed"/>
+                  </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="btnLoadGame.setContentAreaFilled(false);&#xa;btnLoadGame.setBorderPainted(false);"/>
                   </AuxValues>

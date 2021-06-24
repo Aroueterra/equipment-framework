@@ -2,36 +2,36 @@ package aroueterra.EquipmentFramework.UI.inventory;
 
 import aroueterra.EquipmentFramework.UI.custom.CellPane;
 import aroueterra.EquipmentFramework.UI.custom.ImagePanel;
-import static aroueterra.EquipmentFramework.UI.inventory.ItemType.WEAPON;
-import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.DAMAGE;
-import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.PRICE;
-import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.RARITY;
 import aroueterra.EquipmentFramework.player.Hero;
 import aroueterra.EquipmentFramework.player.Shop;
+import aroueterra.EquipmentFramework.utility.JukeBox;
+import aroueterra.EquipmentFramework.utility.Song;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.PopupMenu;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 public class Inventory {
 
     private final Item[][] items;
     private CellPane[][] inventoryCells;
+    JukeBox jukeBox;
 
     public Inventory(int height, int width) {
         items = new Item[height][width];
         inventoryCells = new CellPane[5][5];
+        var songs = new Song[]{
+            Song.GOLD,
+            Song.EQUIP,
+            Song.SELECT,};
+        var assets = new String[]{
+            "/sounds/gold.wav",
+            "/sounds/equip.wav",
+            "/sounds/select.wav"
+        };
+        jukeBox = new JukeBox(songs, assets);
     }
 
     public boolean store(Item item, int row, int column) {
@@ -75,7 +75,7 @@ public class Inventory {
             return null;
         }
         if (items[row][column] == null) {
-            System.out.println("There's nothing here");
+            //System.out.println("There's nothing here");
             return null;
         }
         return items[row][column];
@@ -108,6 +108,21 @@ public class Inventory {
             }
         }
         return null;
+    }
+
+    public void repaintCells() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (items[i][j] != null) {
+                    Map<String, Integer> coordinates = new HashMap<>();
+                    coordinates.put("row", i);
+                    coordinates.put("column", j);
+                    var cell = retrieveCell(i, j);
+                    var item = items[i][j];
+                    repaintInnerCell(item.getAsset(), cell.getComponents());
+                }
+            }
+        }
     }
 
     public void clear() {
@@ -157,6 +172,18 @@ public class Inventory {
         return true;
     }
 
+    private void repaintInnerCell(String newAsset, Component[] comp) {
+        for (var i : comp) {
+            var slot = ((ImagePanel) i);
+            if (newAsset.isEmpty()) {
+                slot.setImage("/images/slot_empty.png");
+            } else {
+                slot.setImage(newAsset);
+            }
+
+        }
+    }
+
     public boolean discard(java.awt.event.ActionEvent evt, Component invoker) {
         var cell = (CellPane) invoker;
         int row = cell.getRow();
@@ -185,11 +212,16 @@ public class Inventory {
     //Creates inner cells once for each inventory cell
     public void createInnerCell(JPopupMenu pop, Map<String, JMenuItem> list, Shop shop) {
         var context = list.get("purchase");
+
         context.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Component invoker = pop.getInvoker();
-                shop.purchase(evt, invoker);
+                var purchased = shop.purchase(evt, invoker);
+                if (purchased) {
+                    jukeBox.Play(Song.GOLD);
+                }
+
             }
         });
         pop.add(context);
@@ -210,7 +242,11 @@ public class Inventory {
         context.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Component invoker = pop.getInvoker();
-                hero.equipItem(evt, invoker);
+                boolean equipped = hero.equipItem(evt, invoker);
+                if (equipped) {
+                    jukeBox.Play(Song.EQUIP);
+                }
+
             }
         });
         var context2 = list.get("discard");
@@ -219,6 +255,7 @@ public class Inventory {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Component invoker = pop.getInvoker();
                 hero.inventory.discard(evt, invoker);
+                jukeBox.Play(Song.SELECT);
             }
         });
         pop.add(context);

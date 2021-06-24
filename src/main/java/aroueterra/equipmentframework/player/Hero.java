@@ -1,16 +1,20 @@
 package aroueterra.EquipmentFramework.player;
 
+import aroueterra.EquipmentFramework.UI.DashboardFrame;
 import aroueterra.EquipmentFramework.UI.custom.CellPane;
 import aroueterra.EquipmentFramework.UI.custom.ImagePanel;
 import aroueterra.EquipmentFramework.UI.inventory.*;
 import static aroueterra.EquipmentFramework.UI.inventory.ItemType.*;
 import static aroueterra.EquipmentFramework.UI.inventory.PropertyType.*;
+import aroueterra.EquipmentFramework.utility.JukeBox;
+import aroueterra.EquipmentFramework.utility.Song;
 import java.awt.Component;
 import java.util.Map;
 import javax.swing.JLabel;
 
 public class Hero {
 
+    DashboardFrame frame;
     Map<PropertyType, JLabel> statusLabels;
     Map<ItemType, CellPane> components;
     private Item[] equipment = new Item[8];
@@ -27,6 +31,7 @@ public class Hero {
     private int agility;
     private int strength;
     private int intelligence;
+    private JukeBox jukeBox;
 
     public Hero(String name, int health, int mana, int gold, Inventory inventory) {
         this.name = name;
@@ -34,6 +39,19 @@ public class Hero {
         this.mana = mana;
         this.gold = gold;
         this.inventory = inventory;
+        jukeBox = new JukeBox(Song.POTION, "/sounds/potion.wav");
+    }
+
+    public Hero(String name, int health, int gold, Inventory inventory, Item[] equipment, int strength, int agility, int intelligence) {
+        this.name = name;
+        this.health = health;
+        this.gold = gold;
+        this.inventory = inventory;
+        this.equipment = equipment;
+        this.strength = strength;
+        this.agility = agility;
+        this.intelligence = intelligence;
+        jukeBox = new JukeBox(Song.POTION, "/sounds/potion.wav");
     }
 
     public Hero(String name, int health, int mana, int gold, Inventory inventory, Map<ItemType, CellPane> components) {
@@ -43,18 +61,19 @@ public class Hero {
         this.gold = gold;
         this.inventory = inventory;
         this.components = components;
+        jukeBox = new JukeBox(Song.POTION, "/sounds/potion.wav");
     }
 
     public Item retrieveEquipment(int index) {
-        if (index < 0 || index >= equipment.length) {
+        if (index < 0 || index >= getEquipment().length) {
             System.out.println("Equip slot " + index + ", is out of bounds");
             return null;
         }
-        if (equipment[index] == null) {
+        if (getEquipment()[index] == null) {
             System.out.println("There's nothing equipped there");
             return null;
         }
-        return equipment[index];
+        return getEquipment()[index];
     }
 
     //Equip via context menu
@@ -63,13 +82,21 @@ public class Hero {
         int row = slot.getRow();
         int column = slot.getColumn();
         var item = this.inventory.retrieve(row, column);
+        if (item == null) {
+            System.out.println("There is nothing here!");
+            return false;
+        }
         if (item.getItemType() == ItemType.CONSUMABLE) {
-            System.out.println("Quaffed potion");
+            var child = slot.getComponents();
+            System.out.println("You quaffed the potion, healing 20 HP ");
+            jukeBox.Play(Song.POTION);
+            setHealth(getHealth() + 20);
+            frame.updateHealth(getHealth());
+            inventory.discard(row, column);
             return false;
         }
         var success = equipItem(item);
         if (success) {
-            //balanceStatus(item);
             System.out.println("The item was equipped");
             inventory.discard(row, column);
             return true;
@@ -77,7 +104,6 @@ public class Hero {
             System.out.println("The item was not equipped!");
             return false;
         }
-
     }
 
     public boolean equipItem(Item item) {
@@ -105,20 +131,34 @@ public class Hero {
             case HANDS ->
                 inventoryParity(7, item);
             case CONSUMABLE ->
-                true;
+                false;
             default ->
                 false;
         };
     }
 
     public void unequipItem(int index) {
-        equipment[index] = null;
+        getEquipment()[index] = null;
         System.out.println(getDamage());
     }
 
+    public void repaintEquips() {
+        for (var item : equipment) {
+            if (item != null) {
+                var cell = components.get(item.getItemType()).getComponents();
+                for (var inner : cell) {
+                    var slot = ((ImagePanel) inner);
+                    //slot.setImage("/images/slot_empty.png");
+                    slot.setImage(item.getAsset());
+                }
+            }
+        }
+
+    }
+
     private boolean inventoryParity(int index, Item item) {
-        if (equipment[index] != null) {
-            previous = equipment[index];
+        if (getEquipment()[index] != null) {
+            previous = getEquipment()[index];
             var coordinates = this.inventory.checkFreeSlots();
             if (coordinates == null) {
                 return false;
@@ -126,7 +166,7 @@ public class Hero {
                 this.inventory.store(previous, coordinates.get("row"), coordinates.get("column"), previous.getAsset());
             }
         }
-        equipment[index] = item;
+        getEquipment()[index] = item;
         balanceStatus();
         return true;
     }
@@ -189,7 +229,7 @@ public class Hero {
     public void balanceStatus() {
         setDamage(0);
         setArmor(0);
-        for (var item : equipment) {
+        for (var item : getEquipment()) {
             if (item != null) {
                 if (item.getItemType() == ItemType.WEAPON) {
                     setDamage(getDamage() + item.getProperty(DAMAGE));
@@ -202,6 +242,10 @@ public class Hero {
                 updateLabels();
             }
         }
+    }
+
+    public void setFrame(DashboardFrame frame) {
+        this.frame = frame;
     }
 
     public void updateLabels() {
@@ -254,7 +298,14 @@ public class Hero {
     }
 
     public void setHealth(int health) {
-        this.health = health;
+        if (health > 100) {
+            this.health = 100;
+        } else if (health < 0) {
+            this.health = 0;
+        } else {
+            this.health = health;
+        }
+
     }
 
     public void setMana(int mana) {
@@ -307,5 +358,13 @@ public class Hero {
 
     public void setArmor(int armor) {
         this.armor = armor;
+    }
+
+    public Item[] getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(Item[] equipment) {
+        this.equipment = equipment;
     }
 }

@@ -9,5 +9,6 @@ public enum PropertyType {
     INTELLIGENCE,
     QUANTITY,
     PRICE,
-    RARITY;
+    RARITY,
+    HEALTH;
 }

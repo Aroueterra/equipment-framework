@@ -9,20 +9,34 @@ import aroueterra.EquipmentFramework.Main;
 import aroueterra.EquipmentFramework.UI.DashboardFrame;
 import aroueterra.EquipmentFramework.UI.custom.ImagePanel;
 import aroueterra.EquipmentFramework.UI.inventory.Inventory;
+import aroueterra.EquipmentFramework.UI.inventory.Item;
 import aroueterra.EquipmentFramework.player.Hero;
+import aroueterra.EquipmentFramework.player.SaveManager;
 import aroueterra.EquipmentFramework.utility.Compendium;
+import aroueterra.EquipmentFramework.utility.JukeBox;
+import aroueterra.EquipmentFramework.utility.Song;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Frame;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
@@ -31,6 +45,8 @@ import javax.swing.plaf.FontUIResource;
  * @author aroue
  */
 public class SetupFrame extends javax.swing.JFrame {
+
+    JukeBox jukeBox;
 
     /**
      * Creates new form SetupFrame
@@ -55,15 +71,14 @@ public class SetupFrame extends javax.swing.JFrame {
         }
         setFont(new FontUIResource(exocet), new FontUIResource(exocet_s));
         initComponents();
+        jukeBox = new JukeBox(Song.SELECT, "/sounds/select.wav");
     }
 
     public void CreateDashboard() {
         var compendium = generateCompendium();
         Inventory i = new Inventory(5, 5);
         var name = txtName.getText();
-        while (name.length() < 12) {
-            name = " " + name;
-        }
+        name = checkName(name);
         Hero hero = new Hero(name, 100, 100, 1000, i);
         var dashboard = new DashboardFrame(hero, compendium);
         dashboard.setVisible(true);
@@ -72,12 +87,109 @@ public class SetupFrame extends javax.swing.JFrame {
         dashboard.requestFocus();
     }
 
+    public void CreateDashboard(SaveManager manager) {
+        var compendium = generateCompendium();
+        Inventory inv = new Inventory(5, 5);
+        var name = manager.getName();
+        var health = manager.getHealth();
+        var gold = manager.getGold();
+        var strength = manager.getStrength();
+        var agility = manager.getAgility();
+        var intelligence = manager.getIntelligence();
+        //var experience = manager.getExperience();
+        var inventoryItem = manager.getInventoryItem();
+        var equips = manager.getEquips();
+        var keys = inventoryItem.keySet();
+        keys.forEach(key -> {
+            var value = inventoryItem.get(key);
+            compendiumSearch(key, value, inv, compendium);
+        });
+        Item[] equipment = new Item[8];
+        for (int i = 0; i < 8; i++) {
+            var itemName = equips.get(i);
+            if (itemName == "none") {
+                continue;
+            }
+            compendiumSearch(itemName, i, equipment, compendium);
+        }//public Hero(String name, int health, int gold, Inventory inventory, Item[] equipment, int strength, int agility, int intelligence
+        name = checkName(name);
+        Hero hero = new Hero(name, health, gold, inv, equipment, strength, agility, intelligence);
+        var dashboard = new DashboardFrame(hero, compendium);
+        dashboard.setVisible(true);
+        dashboard.toFront();
+        dashboard.setState(Frame.MAXIMIZED_BOTH);
+        dashboard.requestFocus();
+        this.setVisible(false);
+    }
+
+    private String checkName(String name) {
+        if (!name.isBlank()) {
+            while (name.length() < 12) {
+                name = " " + name;
+            }
+        } else {
+            name = " Adventurer?";
+
+        }
+        return name;
+    }
+
+    private void compendiumSearch(String name, int index, Item[] equipment, Compendium[] compendium) {
+        //Equipment Search
+        Item item = null;
+        for (var c : compendium) {
+            if (c.getName().equals(name)) {
+                item = c.materialize();
+            }
+        }
+        if (item != null) {
+            equipment[index] = item;
+        }
+    }
+
+    private void compendiumSearch(String key, String value, Inventory inventory, Compendium[] compendium) {
+        var k = key.split(":");
+        var row = k[0];
+        var column = k[1];
+        Item item = null;
+        for (var c : compendium) {
+            if (c.getName().equals(value)) {
+                item = c.materialize();
+            }
+        }
+        if (item != null) {
+            inventory.store(item, Integer.parseInt(row), Integer.parseInt(column));
+        }
+    }
+
     private Compendium[] generateCompendium() {
         Reader reader = new InputStreamReader(this.getClass()
                 .getResourceAsStream("/json/compendium2.txt"));
         Compendium[] compendium = new Gson().fromJson(reader, Compendium[].class);
         return compendium;
         //System.out.println(compendium[0].getName());
+    }
+
+    private SaveManager loadGame(File file) {
+        Reader reader = null;
+        try {
+            reader = new FileReader(file);
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+            var heroGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+            var hero = heroGson.fromJson(reader, SaveManager.class);
+            //System.out.println(hero.getName());
+            return hero;
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
 
     private void setFont(FontUIResource myFont, FontUIResource myFont_s) {
@@ -333,6 +445,11 @@ public class SetupFrame extends javax.swing.JFrame {
         btnLoadGame.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_pressed.png"))); // NOI18N
         btnLoadGame.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_highlight.png"))); // NOI18N
         btnLoadGame.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/btn_loadgame_normal.png"))); // NOI18N
+        btnLoadGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadGameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -395,10 +512,27 @@ public class SetupFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGameActionPerformed
-
+        jukeBox.Play(Song.SELECT);
         CreateDashboard();
         this.setVisible(false);
     }//GEN-LAST:event_btnNewGameActionPerformed
+
+    private void btnLoadGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadGameActionPerformed
+        jukeBox.Play(Song.SELECT);
+        JFileChooser fileChooser = new JFileChooser();
+        int option = fileChooser.showOpenDialog(this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            if (file.canRead()) {
+                String content;
+
+                var manager = loadGame(file);
+                CreateDashboard(manager);
+            }
+        } else {
+
+        }
+    }//GEN-LAST:event_btnLoadGameActionPerformed
 
     /**
      * @param args the command line arguments

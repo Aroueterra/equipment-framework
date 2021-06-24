@@ -31,14 +31,14 @@ public class Shop extends Hero {
         this.heroCoffers = savings;
     }
 
-    public void purchase(java.awt.event.ActionEvent evt, Component invoker) {
+    public boolean purchase(java.awt.event.ActionEvent evt, Component invoker) {
         var cell = (CellPane) invoker;
         var coordinates = hero.inventory.checkFreeSlots();
         int row = cell.getRow(), column = cell.getColumn();
         int gain = inventory.retrieve(row, column).getProperty(PropertyType.PRICE);
         if (hero.getGold() < gain || hero.getGold() <= 0) {
             System.out.println("You do not have enough gold!");
-            return;
+            return false;
         }
         if (coordinates != null) {
 
@@ -48,8 +48,10 @@ public class Shop extends Hero {
             var item = this.inventory.retrieve(row, column);
             hero.inventory.store(item, coordinates.get("row"), coordinates.get("column"), item.getAsset());
             inventory.discard(evt, invoker);
+            return true;
         } else {
             System.out.println("Cannot purchase, your inventory is full!");
+            return false;
         }
     }
 
