@@ -25,7 +25,8 @@
 
 ## Screenshots:
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/20365551/109002802-a4d3df80-76e1-11eb-9ad4-563215c4a977.png" width="90%" align="center" height="350"></img>
+  <img src="https://user-images.githubusercontent.com/20365551/123254113-d68a7500-d520-11eb-831b-7a7ebd1eba95.PNG" width="90%" align="center" height="350"></img> 
+  
 </p>
 
 ## About:
