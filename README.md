@@ -25,8 +25,7 @@
 
 ## Screenshots:
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/20365551/123254113-d68a7500-d520-11eb-831b-7a7ebd1eba95.PNG" width="30%" align="center"></img> 
-  
+  <img src="https://user-images.githubusercontent.com/20365551/123254113-d68a7500-d520-11eb-831b-7a7ebd1eba95.PNG" width="50%" align="center"></img> 
 </p>
 
 ## About:
@@ -49,14 +48,15 @@ The developed program contains all of the necessary elements of an inventory sys
 - And much more!
 
 ## Screenshots
-<img src="https://user-images.githubusercontent.com/20365551/123254113-d68a7500-d520-11eb-831b-7a7ebd1eba95.PNG" width="50%"></img> 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/20365551/123254113-d68a7500-d520-11eb-831b-7a7ebd1eba95.PNG" width="60%"></img> 
 ### Status
-<img src="https://user-images.githubusercontent.com/20365551/123254137-dd18ec80-d520-11eb-92cb-a54b465db834.PNG" width="50%"></img> 
+<img src="https://user-images.githubusercontent.com/20365551/123254137-dd18ec80-d520-11eb-92cb-a54b465db834.PNG" width="60%"></img> 
 ### Inventory
-<img src="https://user-images.githubusercontent.com/20365551/123254258-06397d00-d521-11eb-98e1-09a2d6237070.PNG" width="50%"></img> 
+<img src="https://user-images.githubusercontent.com/20365551/123254258-06397d00-d521-11eb-98e1-09a2d6237070.PNG" width="60%"></img> 
 ### Merchant
-<img src="https://user-images.githubusercontent.com/20365551/123254274-0a659a80-d521-11eb-89fc-29e50724275d.PNG" width="50%"></img> 
-
+<img src="https://user-images.githubusercontent.com/20365551/123254274-0a659a80-d521-11eb-89fc-29e50724275d.PNG" width="60%"></img> 
+</p>
 ## Download
 Get the app from our [releases page](https://github.com/Aroueterra/equipment-framework/releases).
 run the .bat file or simply enter 'java -jar <filename>.jar' in the targets directory.
