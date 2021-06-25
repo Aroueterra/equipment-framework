@@ -87,8 +87,12 @@ aroueterra@gmail.com
 
 Feel free to contribute to the project, it's open-source, or send us a feature request in the issues page of this repository.
 
-# Implementation
-Currently implements or is dependent on the following libraries:
-
+# Implementations and Credit
+Currently implements or is dependent on the following libraries and resources:
+ - `flatlaf` for look and feel
+ - `gson` for json read and write
+ - Shikashi's Fantasy Icons Pack v2
+ - Diablo 3 fan kit 
+ - Maker of the `Exocet` font!
 
 
