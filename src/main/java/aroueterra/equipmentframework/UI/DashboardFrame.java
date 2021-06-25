@@ -773,12 +773,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //
-        //
-        //MessageConsole mc = new MessageConsole(textarea_status);
-        //mc.redirectOut(null, System.out);
-        //mc.redirectErr(Color.RED, null);
-        //mc.setMessageLines(100);
+
+        MessageConsole mc = new MessageConsole(textarea_status);
+        mc.redirectOut(null, System.out);
+        mc.redirectErr(Color.RED, null);
+        mc.setMessageLines(100);
 
         workHolder.add(scroll_Logs, java.awt.BorderLayout.NORTH);
         scroll_Logs.getAccessibleContext().setAccessibleName("");
