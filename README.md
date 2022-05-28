@@ -29,7 +29,7 @@
 </p>
 
 ## About:
-This project aims recreate some of the more iconic inventory systems developed in gaming, such as the attache case present in the Biohazard series, starting with the Diablo series of games.
+This project aims to recreate some of the more iconic inventory systems developed in gaming, such as the attache case present in the Biohazard series, starting with the Diablo series of games.
 
 Inventory Management has always been a key aspect in video games, especially RPGs. When they are designed properly, what was once considered a chore can actually be a more interesting and deeply-involved system.  
 
